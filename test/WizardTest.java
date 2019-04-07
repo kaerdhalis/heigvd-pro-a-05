@@ -10,5 +10,10 @@ public class WizardTest {
         assertNotEquals(w1.getId(), w2.getId());
     }
 
+    @Test
+    public void firstWizardHasId0(){
+        Wizard w = new Wizard();
+        assertEquals(0,w.getId());
+    }
 
 }
