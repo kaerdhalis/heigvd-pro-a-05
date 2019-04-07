@@ -15,6 +15,14 @@ public class Wizard {
         id_generator++;
     }
 
+    public void castSpell(ShieldSpell spell){
+
+    }
+
+    public void castSpell(AttackSpell spell, Wizard target){
+
+    }
+
     /**
      * Getter of the health points
      * @return the current number of health points
