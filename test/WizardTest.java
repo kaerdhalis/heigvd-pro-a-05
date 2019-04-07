@@ -1,7 +1,13 @@
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class WizardTest {
+    @BeforeAll
+    public static void firstWizardHasId0(){
+        Wizard w = new Wizard();
+        assertEquals(0,w.getId());
+    }
 
     @Test
     public void wizardMakesUniqueId(){
@@ -11,9 +17,10 @@ public class WizardTest {
     }
 
     @Test
-    public void firstWizardHasId0(){
+    public void wizardIsCreatedAlive(){
         Wizard w = new Wizard();
-        assertEquals(0,w.getId());
+        assertFalse(w.isDead());
     }
+
 
 }

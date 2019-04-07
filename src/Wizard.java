@@ -2,7 +2,7 @@
  * Class representing a wizard.
  */
 public class Wizard {
-    private static int id_generator;
+    private static int id_generator = 0;
     private int healthPoint = 100;
     private boolean isDead = false;
     private int id;
