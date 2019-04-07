@@ -22,5 +22,4 @@ public class WizardTest {
         assertFalse(w.isDead());
     }
 
-
 }
