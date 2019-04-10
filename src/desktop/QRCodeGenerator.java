@@ -27,7 +27,7 @@ public class QRCodeGenerator {
         MatrixToImageWriter.writeToPath(bitMatrix, "PNG", path);
     }
     // https://stackoverflow.com/questions/9481865/getting-the-ip-address-of-the-current-machine-using-java
-    private static String getServerIP() {
+    private static String getServerIP(String networkID) {
         try {
             Enumeration networkInterfaces = NetworkInterface.getNetworkInterfaces();
             while(networkInterfaces.hasMoreElements())
@@ -42,7 +42,7 @@ public class QRCodeGenerator {
 
                     // Chercher l'ip correspondant au réseau
                     // TODO : Changer pour un passage du réseau en paramètre
-                    if(adr.substring(0, 9).equals("10.192.93")) {
+                    if(adr.substring(0, networkID.length()).equals(networkID)) {
                         return adr;
                     }
                 }
@@ -57,13 +57,11 @@ public class QRCodeGenerator {
 
     public static void main(String[] args) {
         try {
-            generateQRCodeImage(getServerIP() + ":" + PORT, 350, 350, QR_CODE_IMAGE_PATH);
+            generateQRCodeImage(getServerIP("10.192.93") + ":" + PORT, 350, 350, QR_CODE_IMAGE_PATH);
         } catch (WriterException e) {
             System.out.println("Could not generate QR Code, WriterException :: " + e.getMessage());
         } catch (IOException e) {
             System.out.println("Could not generate QR Code, IOException :: " + e.getMessage());
         }
-
-        getServerIP();
     }
 }
