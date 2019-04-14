@@ -45,11 +45,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void StartHostActivity(View view){
         Intent intent = new Intent(this, HostActivity.class);
-        startActivity(intent);
+        this.startActivity(intent);
     }
 
     public void StartQRCodeReaderActivity(View view) {
         Intent intent = new Intent(this, QRCodeReaderActivity.class);
-        startActivity(intent);
+        this.startActivity(intent);
     }
 }
