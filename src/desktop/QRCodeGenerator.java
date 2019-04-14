@@ -41,7 +41,7 @@ public class QRCodeGenerator {
                     String adr = i.getHostAddress();
 
                     // Chercher l'ip correspondant au réseau
-                    // TODO : Changer pour un passage du réseau en paramètre
+                    // TODO : Adapter pour des réseaux avec un masque pas "rond", peut-être une range ?
                     if(adr.substring(0, networkID.length()).equals(networkID)) {
                         return adr;
                     }
