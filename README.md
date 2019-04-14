@@ -12,7 +12,7 @@ Development team:
 |----------------------------------------------|-------------------------------------|--------------|
 | Julien Huguet                                | julien.huguet@heig-vd.ch            | JulienHuguet |
 | Jorge André Fulgencio Esteves (project lead) | jorge.fulgencioesteves@heig-vd.ch   | Tatallias    |
-| Benjamin Le Guillou                 		   | benjamin.leguillou@heig-vd.ch       | ************	|
+| Benjamin Le Guillou                 		   | benjamin.leguillou@heig-vd.ch       | kaerdhalis	|
 | Luca Reis de Carvalho               		   | luca-manu.reisdecarvalho@heig-vd.ch | goturak 		|
 | Alison Savary 							   | alison.savary@heig-vd.ch   		 | Boosterloop  |
 | Guillaume Vetter (deputy project lead)	   | guillaume.vetter@heig-vd.ch 		 | gvetter 		|
