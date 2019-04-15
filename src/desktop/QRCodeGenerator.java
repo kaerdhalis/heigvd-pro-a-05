@@ -1,4 +1,15 @@
 // https://www.callicoder.com/generate-qr-code-in-java-using-zxing/
+
+/* How to use
+    try {
+        generateQRCodeImage(getServerIPs() + "\nPort\n" + PORT, 350, 350, QR_CODE_IMAGE_PATH);
+    } catch (WriterException e) {
+        System.out.println("Could not generate QR Code, WriterException :: " + e.getMessage());
+    } catch (IOException e) {
+        System.out.println("Could not generate QR Code, IOException :: " + e.getMessage());
+    }
+*/
+
 package desktop;
 
 import com.google.zxing.BarcodeFormat;
@@ -27,7 +38,9 @@ public class QRCodeGenerator {
         MatrixToImageWriter.writeToPath(bitMatrix, "PNG", path);
     }
     // https://stackoverflow.com/questions/9481865/getting-the-ip-address-of-the-current-machine-using-java
-    private static String getServerIP(String networkID) {
+    private static String getServerIPs() {
+        String serverIPs = "IPs\n";
+        // TODO : Enlever les IPs spéciales (APIPA, Loopback ...) et IPv6
         try {
             Enumeration networkInterfaces = NetworkInterface.getNetworkInterfaces();
             while(networkInterfaces.hasMoreElements())
@@ -37,31 +50,13 @@ public class QRCodeGenerator {
                 while (addresses.hasMoreElements())
                 {
                     InetAddress i = (InetAddress) addresses.nextElement();
-
-                    String adr = i.getHostAddress();
-
-                    // Chercher l'ip correspondant au réseau
-                    // TODO : Adapter pour des réseaux avec un masque pas "rond", peut-être une range ?
-                    if(adr.substring(0, networkID.length()).equals(networkID)) {
-                        return adr;
-                    }
+                    serverIPs += i.getHostAddress() + "\n";
                 }
             }
-            return null;
         }
         catch (SocketException e) {
             e.printStackTrace();
         }
-        return "";
-    }
-
-    public static void main(String[] args) {
-        try {
-            generateQRCodeImage(getServerIP("10.192.93") + ":" + PORT, 350, 350, QR_CODE_IMAGE_PATH);
-        } catch (WriterException e) {
-            System.out.println("Could not generate QR Code, WriterException :: " + e.getMessage());
-        } catch (IOException e) {
-            System.out.println("Could not generate QR Code, IOException :: " + e.getMessage());
-        }
+        return serverIPs;
     }
 }
