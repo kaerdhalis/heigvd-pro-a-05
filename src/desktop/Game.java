@@ -2,6 +2,8 @@ package desktop;
 
 import java.util.LinkedList;
 
+import common.spells.Quality;
+import common.spells.ShieldSpell;
 import org.lwjgl.input.Mouse;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -19,7 +21,8 @@ public class Game extends BasicGameState {
 	private GameContainer container;
 	private TiledMap map;
 	private LinkedList<Wizard> wizards, wizardsToRemove;
-	private LinkedList<AttackSpell> attackSpells, spellsToRemove;
+	private LinkedList<AttackSpell> attackSpells, attackSpellstoRemove;
+	private LinkedList<ShieldSpell> shieldSpells, shieldSpellstoRemove;
 
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
@@ -27,7 +30,9 @@ public class Game extends BasicGameState {
 	    map = new TiledMap("img/tiles/map1.tmx");
 	    wizards = new LinkedList<>();
 	    wizardsToRemove = new LinkedList<>();
-	    spellsToRemove = new LinkedList<>();
+	    attackSpellstoRemove = new LinkedList<>();
+	    shieldSpellstoRemove = new LinkedList<>();
+	    shieldSpells = new LinkedList<>();
 	    attackSpells = new LinkedList<>();
 	    wizards.add(new Wizard(135, 245));
 	    wizards.add(new Wizard(489, 245));
@@ -43,14 +48,21 @@ public class Game extends BasicGameState {
 		for(AttackSpell as : attackSpells) {
 			as.render(g);
 		}
+
+		for(ShieldSpell sp : shieldSpells) {
+			sp.render(g);
+		}
 	}
 
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int a) throws SlickException {
-		for(AttackSpell as : spellsToRemove) {
+		for(AttackSpell as : attackSpellstoRemove) {
 			attackSpells.remove(as);
 		}
-		spellsToRemove.clear();
+		for(ShieldSpell sp : shieldSpellstoRemove) {
+			shieldSpells.remove(sp);
+		}
+		attackSpellstoRemove.clear();
 		for(Wizard wizard : wizardsToRemove) {
 			wizards.remove(wizard);
 		}
@@ -61,11 +73,17 @@ public class Game extends BasicGameState {
 			for(Wizard wizard : wizards) {
 				if(wizard.checkCollision(as)) {
 					wizard.getHit(as);
-					spellsToRemove.add(as);
+					attackSpellstoRemove.add(as);
 				}
 			}
 			if(as.isOver())
-				spellsToRemove.add(as);
+				attackSpellstoRemove.add(as);
+		}
+		
+		for(ShieldSpell sp : shieldSpells){
+			if(sp.isOver()){
+				shieldSpellstoRemove.add(sp);
+			}
 		}
 		
 		for(Wizard wizard : wizards) {
@@ -84,12 +102,16 @@ public class Game extends BasicGameState {
 		 if(button == 0) {
 				Vector v = new Vector(wizards.get(0).getX(), x, wizards.get(0).getY(), y);
 
-			 for(Wizard wizard : wizards) {
+			for(Wizard wizard : wizards) {
 				if((!wizard.equals(wizards.get(0))) && wizard.isTarget(wizards.get(0), v
-						)) {
-					attackSpells.add(new AttackSpell(10, MagicType.FIRE, wizards.get(0), wizard));
+					)) {
+					attackSpells.add(new AttackSpell(Quality.OKAY, MagicType.FIRE, wizards.get(0), wizard));
 				}
-			 }
+			}
+		 }
+		 
+		 if(button == 1) {
+		 	shieldSpells.add(new ShieldSpell(Quality.PERFECT, MagicType.LIGHTNING, wizards.get(0)));
 		 }
 	 }
 

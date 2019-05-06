@@ -14,8 +14,8 @@ public class AttackSpell extends Spell {
 	private int index;
 	private ArrayList<Pair<Integer, Integer>> trajectory;
 	
-    public AttackSpell(int power, MagicType type, Wizard caster, Wizard target){
-        super(caster.getX(), caster.getY(), power, type);
+    public AttackSpell(Quality quality, MagicType type, Wizard caster, Wizard target){
+        super(caster.getX(), caster.getY(), quality, type);
         this.target = target;
         index = 30;
         trajectory = computeTrajectory(caster, target);
@@ -32,7 +32,7 @@ public class AttackSpell extends Spell {
     }
     
     public void render(Graphics g) throws SlickException {
-        g.setColor(Color.red);
+        g.setColor(getColor());
         g.fillOval(x - 8, y - 8, 16, 16);
     }
     

@@ -51,8 +51,8 @@ public class Wizard {
     	if(shield != null) {
     		shield = null;
     	} else {
-    		System.out.println("Ouch i took "+ spell.getPower() +" damage pts");
-    		healthPoint -= spell.getPower();
+    		System.out.println("Ouch i took "+ spell.computePower() +" damage pts");
+    		healthPoint -= spell.computePower();
     		
     		// Killing blow
     		if (healthPoint <= 0) {
