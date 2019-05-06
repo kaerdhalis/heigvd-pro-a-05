@@ -1,15 +1,3 @@
-// https://www.callicoder.com/generate-qr-code-in-java-using-zxing/
-
-/* How to use
-    try {
-        generateQRCodeImage(getServerIPs() + "\nPort\n" + PORT, 350, 350, QR_CODE_IMAGE_PATH);
-    } catch (WriterException e) {
-        System.out.println("Could not generate QR Code, WriterException :: " + e.getMessage());
-    } catch (IOException e) {
-        System.out.println("Could not generate QR Code, IOException :: " + e.getMessage());
-    }
-*/
-
 package desktop;
 
 import com.google.zxing.BarcodeFormat;
@@ -29,18 +17,33 @@ public class QRCodeGenerator {
     private static final String QR_CODE_IMAGE_PATH = "./qr.png";
     private static final String PORT = "6666";
 
-    private static void generateQRCodeImage(String text, int width, int height, String filePath)
+    /**
+     * Genère le QR code contenant les IPs du serveur ainsi que le port
+     * Source : https://www.callicoder.com/generate-qr-code-in-java-using-zxing/
+     * @param width  :  int, largeur du QR code
+     * @param height : int, hauteur du QR code
+     * @throws WriterException :
+     * @throws IOException     :
+     */
+    public static void generateQRCodeImageWithIPsAndPort(int width, int height)
             throws WriterException, IOException {
+        String text = getServerIPs() + "\nPort\n" + PORT;
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
         BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height);
 
-        Path path = FileSystems.getDefault().getPath(filePath);
+        Path path = FileSystems.getDefault().getPath(QR_CODE_IMAGE_PATH);
         MatrixToImageWriter.writeToPath(bitMatrix, "PNG", path);
     }
-    // https://stackoverflow.com/questions/9481865/getting-the-ip-address-of-the-current-machine-using-java
+
+    /**
+     * Retourne un String contenant toutes les IPs du serveur.
+     * retour à la ligne.
+     * Source : https://stackoverflow.com/questions/9481865/getting-the-ip-address-of-the-current-machine-using-java
+     * @return : String, IPs du serveur, séparée par "\n"
+     */
     private static String getServerIPs() {
         String serverIPs = "IPs\n";
-        // TODO : Enlever les IPs spéciales (APIPA, Loopback ...) et IPv6
+
         try {
             Enumeration networkInterfaces = NetworkInterface.getNetworkInterfaces();
             while(networkInterfaces.hasMoreElements())
@@ -50,7 +53,11 @@ public class QRCodeGenerator {
                 while (addresses.hasMoreElements())
                 {
                     InetAddress i = (InetAddress) addresses.nextElement();
-                    serverIPs += i.getHostAddress() + "\n";
+
+                    // Garde seulement les adresses IPv4
+                    if(i instanceof Inet4Address && !i.isLoopbackAddress()) {
+                        serverIPs += i.getHostAddress() + "\n";
+                    }
                 }
             }
         }
