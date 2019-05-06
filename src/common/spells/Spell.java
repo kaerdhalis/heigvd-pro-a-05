@@ -43,7 +43,7 @@ public abstract class Spell {
     public Color getColor(){
         switch (type){
             case EARTH:
-                return Color.orange;
+                return Color.green;
             case WATER:
                 return Color.blue;
             case LIGHTNING:

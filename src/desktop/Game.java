@@ -48,10 +48,6 @@ public class Game extends BasicGameState {
 		for(AttackSpell as : attackSpells) {
 			as.render(g);
 		}
-
-		for(ShieldSpell sp : shieldSpells) {
-			sp.render(g);
-		}
 	}
 
 	@Override
@@ -59,10 +55,11 @@ public class Game extends BasicGameState {
 		for(AttackSpell as : attackSpellstoRemove) {
 			attackSpells.remove(as);
 		}
+		attackSpellstoRemove.clear();
 		for(ShieldSpell sp : shieldSpellstoRemove) {
 			shieldSpells.remove(sp);
 		}
-		attackSpellstoRemove.clear();
+		shieldSpellstoRemove.clear();
 		for(Wizard wizard : wizardsToRemove) {
 			wizards.remove(wizard);
 		}
@@ -79,7 +76,7 @@ public class Game extends BasicGameState {
 			if(as.isOver())
 				attackSpellstoRemove.add(as);
 		}
-		
+
 		for(ShieldSpell sp : shieldSpells){
 			if(sp.isOver()){
 				shieldSpellstoRemove.add(sp);
@@ -105,13 +102,18 @@ public class Game extends BasicGameState {
 			for(Wizard wizard : wizards) {
 				if((!wizard.equals(wizards.get(0))) && wizard.isTarget(wizards.get(0), v
 					)) {
-					attackSpells.add(new AttackSpell(Quality.OKAY, MagicType.FIRE, wizards.get(0), wizard));
+					attackSpells.add(new AttackSpell(Quality.PERFECT, MagicType.FIRE, wizards.get(0), wizard));
 				}
 			}
 		 }
 		 
 		 if(button == 1) {
-		 	shieldSpells.add(new ShieldSpell(Quality.PERFECT, MagicType.LIGHTNING, wizards.get(0)));
+		 	if(wizards.get(1).getShield() == null) {
+				shieldSpells.add(new ShieldSpell(Quality.PERFECT, MagicType.FIRE, wizards.get(1)));
+			} else {
+		 		shieldSpellstoRemove.add(wizards.get(1).getShield());
+		 		shieldSpells.add(new ShieldSpell(Quality.PERFECT, MagicType.EARTH, wizards.get(1)));
+			}
 		 }
 	 }
 
