@@ -28,26 +28,25 @@ public class MainMenu extends BasicGameState {
 	}
 
 	@Override
-	public void update(GameContainer arg0, StateBasedGame arg1, int arg2) throws SlickException {
+	public void update(GameContainer gc, StateBasedGame arg1, int arg2) throws SlickException {
 		int x = Mouse.getX();
-		int y = arg0.getHeight() - Mouse.getY();
-		System.out.println(x + ", " + y);
+		int y = gc.getHeight() - Mouse.getY();
 		//startGame button pressed
-		if((x > arg0.getWidth() / 2 - 50 && x < arg0.getWidth() / 2 + 50) && (y > 100 && y < 150)) {
+		if((x > gc.getWidth() / 2 - 50 && x < gc.getWidth() / 2 + 50) && (y > 100 && y < 150)) {
 			if(Mouse.isButtonDown(0)) {
 				arg1.enterState(1);
 			}
 		}
 		
 		//credits button pressed
-		if((x > arg0.getWidth() / 2 - 50 && x < arg0.getWidth() / 2 + 50) && (y > 200 && y < 250)) {
+		if((x > gc.getWidth() / 2 - 50 && x < gc.getWidth() / 2 + 50) && (y > 200 && y < 250)) {
 			if(Mouse.isButtonDown(0)) {
 				arg1.enterState(2);
 			}
 		}
 		
 		//exit button pressed
-		if((x > arg0.getWidth() / 2 - 50 && x < arg0.getWidth() / 2 + 50) && (y > 300 && y < 350)) {
+		if((x > gc.getWidth() / 2 - 50 && x < gc.getWidth() / 2 + 50) && (y > 300 && y < 350)) {
 			if(Mouse.isButtonDown(0)) {
 				System.exit(0);;
 			}
