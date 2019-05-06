@@ -7,19 +7,21 @@ import org.newdawn.slick.state.StateBasedGame;
 
 public class ServerMain extends StateBasedGame{
 	private static final int MENU = 0;
-	private static final int CREDITS = 0;
-	private static final int GAME = 0;
+	private static final int CREDITS = 2;
+	private static final int GAME = 1;
 	
 	
 	public ServerMain(String name) {
 		super(name);
 		this.addState(new MainMenu());
+		this.addState(new Game());
 	}
+	
 	@Override
-	public void initStatesList(GameContainer arg0) throws SlickException {
-		this.getState(MENU).init(arg0, this);
+	public void initStatesList(GameContainer gc) throws SlickException {
+		this.getState(MENU).init(gc, this);
 		//this.getState(CREDITS).init(arg0, this);
-		//this.getState(GAME).init(arg0, this);
+		this.getState(GAME).init(gc, this);
 	}
 
 	public static void main(String[] args) throws SlickException {
