@@ -16,7 +16,6 @@ import java.util.*;
  */
 public class Wizard {
 	private int x, y;
-    private static int id_generator = 0;
     private int healthPoint = 100;
     private boolean isDead = false;
     private int id;
@@ -33,16 +32,23 @@ public class Wizard {
     public Wizard(int x, int y) {
     	this.x = x;
     	this.y = y;
-        this.id = id_generator;
-        id_generator++;
+    }
+
+    public void setId(int i){
+        this.id = i;
     }
 
     public LinkedList<ElementalOrb> getOrbs() {
         return orbs;
     }
 
-    public void addOrb(ElementalOrb orb) {
-        this.orbs.add(orb);
+    public boolean addOrb(ElementalOrb orb) {
+        boolean render = false;
+        if(orbs.size() < 4) {
+            this.orbs.add(orb);
+            render = true;
+        }
+        return render;
     }
 
     public LinkedList<ShieldSpell> getShield(){

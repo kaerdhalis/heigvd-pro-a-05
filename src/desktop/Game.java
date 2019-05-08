@@ -41,6 +41,15 @@ public class Game extends BasicGameState {
 	    wizards.add(new Wizard(489, 245));
 	    //wizards.add(new Wizard(312, 68));
 	    //wizards.add(new Wizard(312, 422));
+		setId();
+	}
+
+	private void setId(){
+		int id = 0;
+		for(Wizard w : wizards){
+			w.setId(id);
+			id++;
+		}
 	}
 
 	@Override
@@ -131,10 +140,12 @@ public class Game extends BasicGameState {
 	}
 
 	private void castShield(Wizard caster){
-		for(int i = 0; i < caster.getShield().size(); i++){
-			shieldSpellstoRemove.add(caster.getShield().get(i));
-			caster.getShield().get(1).setOver();
-			caster.getShield().clear();
+		if(caster.getOrbs().size() != 0) {
+			for (int i = 0; i < caster.getShield().size(); i++) {
+				shieldSpellstoRemove.add(caster.getShield().get(i));
+				caster.getShield().get(i).setOver();
+				caster.getShield().clear();
+			}
 		}
 		LinkedList<ElementalOrb> orbs = caster.getOrbs();
 		for(int i = 0; i < orbs.size(); i++) {
@@ -161,8 +172,10 @@ public class Game extends BasicGameState {
 
 	private void castOrb(Wizard caster, Quality qual, MagicType type){
 		ElementalOrb orb = new ElementalOrb(caster, qual, type);
-		elementalOrbs.add(orb);
-		caster.addOrb(orb);
+		if(caster.addOrb(orb)) {
+			elementalOrbs.add(orb);
+		}
+
 	}
 
 	public void parse(int id, byte[] request){

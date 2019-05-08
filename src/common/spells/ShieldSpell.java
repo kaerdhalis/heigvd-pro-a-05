@@ -23,11 +23,15 @@ public class ShieldSpell extends Spell {
     private Pair<Integer, Integer> getArcBounds(){
         switch (orb.getCaster().getId()){
             case 0:
-                return new Pair<>(315, 45);
+                return new Pair<>(270, 90);
             case 1:
-                return new Pair<>(135, 225);
+                return new Pair<>(90, 270);
+            case 2:
+                return new Pair<>(0,180);
+            case 3:
+                return new Pair<>(180, 0);
             default:
-                return new Pair<>(0,10);
+                return new Pair<>(0,0);
         }
     }
 
@@ -35,7 +39,7 @@ public class ShieldSpell extends Spell {
         g.setColor(getColor());
         g.setLineWidth(4);
         //g.drawOval(orb.getCaster().getX() - 18 - radius/2 - counter, orb.getCaster().getY() - 18 - radius/2 - counter, 36 + radius + counter*2, 36 + radius + counter*2 );
-        g.drawArc(orb.getCaster().getX() - 18 - radius/2 - counter, orb.getCaster().getY() - 18 - radius/2 - counter,   36 + radius + counter*2, 36 + radius + counter*2, getArcBounds().getKey() , getArcBounds().getValue());
+        g.drawArc(orb.getCaster().getX() - 18 - radius/2 - counter, orb.getCaster().getY() - 18 - radius/2 - counter, 36 + radius + counter*2, 36 + radius + counter*2, getArcBounds().getKey() , getArcBounds().getValue());
         frameCounter--;
         if(!orb.getCaster().getShield().isEmpty() && frameCounter == 0){
             orb.getCaster().getShield().clear();
