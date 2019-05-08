@@ -2,8 +2,7 @@ package desktop;
 
 import java.util.LinkedList;
 
-import common.spells.Quality;
-import common.spells.ShieldSpell;
+import common.spells.*;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
@@ -12,8 +11,6 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.tiled.TiledMap;
 
 import common.Wizard;
-import common.spells.AttackSpell;
-import common.spells.MagicType;
 import util.Vector;
 
 public class Game extends BasicGameState {
@@ -120,55 +117,8 @@ public class Game extends BasicGameState {
 	public void keyPressed(int key, char c){
 		if(null != wizards) {
 			if (c == 'q') {
-				castShield(Quality.PERFECT, MagicType.FIRE, wizards.get(0));
-			}
-			if (c == 'w') {
-				castShield(Quality.PERFECT, MagicType.WATER, wizards.get(1));
-			}
-			if (c == 'e') {
-				castShield(Quality.PERFECT, MagicType.WATER, wizards.get(2));
-			}
-			if (c == 'r') {
-				castShield(Quality.PERFECT, MagicType.LIGHTNING, wizards.get(3));
-			}
-			if(c == 'a'){
-				castAttack(489,245, Quality.PERFECT, MagicType.FIRE, wizards.get(0));
-			}
-			if(c == 's'){
-				castAttack(489,245, Quality.PERFECT, MagicType.EARTH, wizards.get(1));
-			}
-			if(c == 'd'){
-				castAttack(489,245, Quality.PERFECT, MagicType.WATER, wizards.get(2));
-			}
-			if(c == 'f'){
-				castAttack(489,245, Quality.PERFECT, MagicType.LIGHTNING, wizards.get(3));
-			}
-		}
-		if(!(wizards.size()<2)) {
-			if (c == 'u') {
-				castShield(Quality.PERFECT, MagicType.FIRE, wizards.get(1));
-			}
-			if (c == 'i') {
-				castShield(Quality.PERFECT, MagicType.EARTH, wizards.get(1));
-			}
-			if (c == 'o') {
-				castShield(Quality.PERFECT, MagicType.WATER, wizards.get(1));
-			}
-			if (c == 'p') {
-				castShield(Quality.PERFECT, MagicType.LIGHTNING, wizards.get(1));
-			}
-
-			if (c == 'j') {
-				castAttack(135, 245, Quality.PERFECT, MagicType.FIRE, wizards.get(1));
-			}
-			if (c == 'k') {
-				castAttack(135, 245, Quality.PERFECT, MagicType.EARTH, wizards.get(1));
-			}
-			if (c == 'l') {
-				castAttack(135, 245, Quality.PERFECT, MagicType.WATER, wizards.get(1));
-			}
-			if (c == 'é') {
-				castAttack(135, 245, Quality.PERFECT, MagicType.LIGHTNING, wizards.get(1));
+				String string = "SHI 3 2";
+				parse(0, string.getBytes());
 			}
 		}
 	}
@@ -182,13 +132,24 @@ public class Game extends BasicGameState {
 		}
 	}
 	
-	private void castAttack(int x, int y, Quality qual, MagicType type, Wizard caster){
-		Vector v = new Vector(caster.getX(), x, caster.getY(), y);
-
+	private void castAttack(Vector v, Quality qual, MagicType type, Wizard caster){
 		for (Wizard target : wizards) {
 			if ((!target.equals(caster)) && target.isTarget(caster, v)) {
 				attackSpells.add(new AttackSpell(qual, type, caster, target));
 			}
+		}
+	}
+
+	public void parse(int id, byte[] request){
+		String requestString = new String(request);
+		String[] requestStringSplitted = requestString.split(" ");
+		String spellType = requestStringSplitted[0];
+		MagicType element = MagicType.values()[Integer.parseInt(requestStringSplitted[1])];
+		Quality quality = Quality.values()[Integer.parseInt(requestStringSplitted[2])];
+		if(spellType.equals("ATT")){
+			castAttack(new Vector(Double.parseDouble(requestStringSplitted[3]), Double.parseDouble(requestStringSplitted[4])), quality, element, wizards.get(id));
+		} else if(spellType.equals("SHI")) {
+			castShield(quality, element, wizards.get(id));
 		}
 	}
 
