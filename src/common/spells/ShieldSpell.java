@@ -12,6 +12,10 @@ public class ShieldSpell extends Spell {
     private static int counter = -1;
     private int radius;
 
+    /**
+     * Constructor taking an orb as parameter.
+     * @param orb the magic orb defining the spell.
+     */
     public ShieldSpell(ElementalOrb orb){
         super(orb);
         counter+=4;
@@ -20,6 +24,10 @@ public class ShieldSpell extends Spell {
         orb.getCaster().addShield(this);
     }
 
+    /**
+     * Helper method used to compute the angle at which the shield needs to be oriented
+     * @return a Pair of intergers that represents the starting and ending angles of the arc of the shield.
+     */
     private Pair<Integer, Integer> getArcBounds(){
         switch (orb.getCaster().getId()){
             case 0:
@@ -35,6 +43,11 @@ public class ShieldSpell extends Spell {
         }
     }
 
+    /**
+     * Method used to render a shield
+     * @param g graphics
+     * @throws SlickException in case of emergency.
+     */
     public void render(Graphics g) throws SlickException {
         g.setColor(getColor());
         g.setLineWidth(4);
@@ -47,11 +60,18 @@ public class ShieldSpell extends Spell {
         }
     }
 
+    /**
+     * Method used to check if the shield is over.
+     * @return true if the shield is over, false otherwise.
+     */
     public boolean isOver(){
         counter = -1;
         return over;
     }
 
+    /**
+     * Method used to set the boolean over to true.
+     */
     public void setOver(){
         over = true;
     }

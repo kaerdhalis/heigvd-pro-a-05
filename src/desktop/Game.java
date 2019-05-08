@@ -1,7 +1,5 @@
 package desktop;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -14,7 +12,6 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.tiled.TiledMap;
 
 import common.Wizard;
-import sun.awt.image.ImageWatched;
 import util.Vector;
 
 public class Game extends BasicGameState {

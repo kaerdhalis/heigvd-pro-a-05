@@ -17,6 +17,12 @@ public class ElementalOrb {
     private double radius = 30.0;
     private ArrayList<Pair<Integer, Integer>> trajectory;
 
+    /**
+     * Constructor of a magic orb, used to build powerfull spell
+     * @param caster the caster of the orb
+     * @param quality the quality of the cast
+     * @param type the type of the spell
+     */
     public ElementalOrb(Wizard caster, Quality quality, MagicType type) {
         this.x = caster.getX();
         this.y = caster.getY();
@@ -26,10 +32,18 @@ public class ElementalOrb {
         this.trajectory = computeTrajectory();
     }
 
+    /**
+     * Getter of the caster
+     * @return the caster of the orb
+     */
     public Wizard getCaster() {
         return caster;
     }
 
+    /**
+     * Method used to compute the trajectory of the orb around the caster
+     * @return an array of positions representing the trajectory.
+     */
     private ArrayList<Pair<Integer, Integer>> computeTrajectory() {
         ArrayList<Pair<Integer,Integer>> result = new ArrayList<>();
         for(double d  = 0.0; d < Math.PI*2; d = d + 0.05) {
@@ -38,11 +52,19 @@ public class ElementalOrb {
         return result;
     }
 
+    /**
+     * Method used to render the orb
+     * @param g the graphics
+     * @throws SlickException in case of emergency.
+     */
     public void render(Graphics g) throws SlickException {
         g.setColor(getColor());
         g.fillOval(x - 8, y - 8, 16, 16);
     }
 
+    /**
+     * Method used to move the orb on the trajectory.
+     */
     public void move() {
         if(index == trajectory.size()){
             index = 0;
@@ -54,46 +76,42 @@ public class ElementalOrb {
         index++;
     }
 
+    /**
+     * Getter of the x coordinate of the orb.
+     * @return the x coordinate of the orb.
+     */
     public int getX() {
         return x;
     }
 
+    /**
+     * Getter of the y coordinate of the orb
+     * @return the y coordinate of the orb.
+     */
     public int getY() {
         return y;
     }
 
-    public int computePower(){
-        switch (quality){
-            case PERFECT:
-                return 10;
-            case GOOD:
-                return 5;
-            case OKAY:
-                return 3;
-            default:
-                return 0;
-        }
-    }
-
+    /**
+     * Getter of the color depending of the type of the orb
+     * @return the color of the orb.
+     */
     public Color getColor(){
-        switch (type){
-            case EARTH:
-                return Color.green;
-            case WATER:
-                return Color.blue;
-            case LIGHTNING:
-                return Color.yellow;
-            case FIRE:
-                return Color.red;
-            default:
-                return Color.black;
-        }
+        return type.getColor();
     }
 
+    /**
+     * Getter of the quality of the orb.
+     * @return the quality of the orb
+     */
     public Quality getQuality() {
         return quality;
     }
 
+    /**
+     * Getter of the type of the orb
+     * @return the type of the orb.
+     */
     public MagicType getType() {
         return type;
     }

@@ -6,7 +6,6 @@ import org.newdawn.slick.SlickException;
 
 import common.spells.AttackSpell;
 import common.spells.ShieldSpell;
-import sun.awt.image.ImageWatched;
 import util.Vector;
 
 import java.util.*;
@@ -23,25 +22,43 @@ public class Wizard {
     private LinkedList<ElementalOrb> orbs = new LinkedList<>();
 
     /**
-     * Constructor, generating a unique id for the wizard.
+     * Constructor by default;
      */
     public Wizard() {
     	this(0, 0);
     }
-    
+
+    /**
+     * Constructor, taking the position of a Wizard.
+     * @param x the x coordinate of the wizard
+     * @param y the y coordinate of the wizard
+     */
     public Wizard(int x, int y) {
     	this.x = x;
     	this.y = y;
     }
 
+    /**
+     * Setter of the id
+     * @param i the new id of the wizard.
+     */
     public void setId(int i){
         this.id = i;
     }
 
+    /**
+     * Getter of the orbs
+     * @return the orbs
+     */
     public LinkedList<ElementalOrb> getOrbs() {
         return orbs;
     }
 
+    /**
+     * Method used to add an orb. A Wizard cannot have more than 4 orbs.
+     * @param orb the new orb we want to add
+     * @return a boolean that indicate if the adding was successfull.
+     */
     public boolean addOrb(ElementalOrb orb) {
         boolean render = false;
         if(orbs.size() < 4) {
@@ -51,14 +68,27 @@ public class Wizard {
         return render;
     }
 
+    /**
+     * Getter of the shields
+     * @return the shields the wizard possesses.
+     */
     public LinkedList<ShieldSpell> getShield(){
         return shield;
     }
 
+    /**
+     * Method used to add a shield to the wizard's shields
+     * @param spell the shield we want to add
+     */
     public void addShield(ShieldSpell spell) {
     	shield.add(spell);
     }
 
+    /**
+     * Method used to check wether a spell has hit the wizard or not
+     * @param spell the incoming spell
+     * @return a boolean telling if the spell has hit or not.
+     */
     public boolean checkCollision(AttackSpell spell) {
         if(spell.getTarget() == this) {
             double deltaX = spell.getX() - x;
@@ -67,10 +97,12 @@ public class Wizard {
         } else {
             return false;
         }
-    	
-
     }
-    
+
+    /**
+     * Method used to check whether the wizard has to take damage or not
+     * @param spell the spell that hit the wizard
+     */
     public void getHit(AttackSpell spell) {
         boolean shielded = false;
         int indexShield = -1;
@@ -93,6 +125,10 @@ public class Wizard {
     	}
     }
 
+    /**
+     * Method used to compute the damage, and check whether the spell hit or not
+     * @param spell the incoming spell
+     */
     private void takeDamage(AttackSpell spell){
         System.out.println("Ouch i took "+ spell.computePower() +" damage pts");
         healthPoint -= spell.computePower();
@@ -103,11 +139,19 @@ public class Wizard {
             isDead = true;
         }
     }
-    
+
+    /**
+     * Getter of the x coordinate of the wizard
+     * @return the x coordinate
+     */
     public int getX() {
     	return x;
     }
-    
+
+    /**
+     * Getter of the y coordinate of the wizard.
+     * @return the y coordinate
+     */
     public int getY() {
     	return y;
     }
@@ -151,7 +195,12 @@ public class Wizard {
     public int getId() {
         return id;
     }
-    
+
+    /**
+     * Method used to render a wizard
+     * @param g the graphics
+     * @throws SlickException in case of emergency.
+     */
     public void render(Graphics g) throws SlickException {
         g.setColor(new Color(0, 0, 0));
         g.fillOval(x - 16, y - 16, 32, 32);
@@ -161,7 +210,13 @@ public class Wizard {
             }
         }
     }
-    
+
+    /**
+     * Method used to check whether the wizard is the target of a spell using a direction vector.
+     * @param wizard the caster of the spell
+     * @param direction the direction in which the spell was thrown
+     * @return true if this wizard was the intended target, false otherwise.
+     */
     public boolean isTarget(Wizard wizard, Vector direction) {	
     	Vector v = new Vector(wizard.x, x, wizard.y, y);
     	return v.contained(new Vector(direction, Math.PI / 8), new Vector(direction, -Math.PI / 8));
