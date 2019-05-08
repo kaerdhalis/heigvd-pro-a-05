@@ -130,7 +130,6 @@ public class Wizard {
     
     public boolean isTarget(Wizard wizard, Vector direction) {	
     	Vector v = new Vector(wizard.x, x, wizard.y, y);
-    	
-    	return v.contained(new Vector(direction, Math.PI / 6), new Vector(direction, -Math.PI / 6));
+    	return v.contained(new Vector(direction, Math.PI / 8), new Vector(direction, -Math.PI / 8));
     }
 }

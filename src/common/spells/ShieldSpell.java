@@ -7,7 +7,7 @@ import org.newdawn.slick.SlickException;
 public class ShieldSpell extends Spell {
 
     private Wizard caster;
-    private int frameCounter = computePower()*250;
+    private int frameCounter = computePower()*25;
     private boolean over = false;
 
     public ShieldSpell(Quality quality, MagicType type, Wizard caster){

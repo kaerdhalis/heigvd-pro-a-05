@@ -10,8 +10,8 @@ public class Vector {
 	 * @param angle
 	 */
 	public Vector(Vector v, double angle) {
-		this(v.x * Math.acos(angle) - v.y * Math.asin(angle),
-				v.x * Math.asin(angle) + v.y * Math.acos(angle));
+		this(v.x * Math.cos(angle) - v.y * Math.sin(angle),
+				v.x * Math.sin(angle) + v.y * Math.cos(angle));
 	}
 	
 	public Vector(double x1, double x2, double y1, double y2) {
@@ -32,8 +32,11 @@ public class Vector {
 	 * 
 	 * @return the angle in radians formed by the vector
 	 */
-	public double getAngle() {
-		return Math.atan2(y, x);
+	public double getAngle(Vector v) {
+		double dotProduct = v.x*x + v.y*y;
+		double firstNorm = Math.sqrt(x*x + y*y);
+		double secondNorm = Math.sqrt(v.x*v.x + v.y*v.y);
+		return Math.acos(dotProduct/(firstNorm * secondNorm));
 	}
 	
 	/**
@@ -44,8 +47,7 @@ public class Vector {
 	 * @return
 	 */
 	public boolean contained(Vector v1, Vector v2) {
-		return (v1.getAngle() <= this.getAngle()) && (v2.getAngle() >= this.getAngle()) ||
-				(v2.getAngle() <= this.getAngle()) && (v1.getAngle() >= this.getAngle());
+		return (v1.getAngle(this) <= v1.getAngle(v2)) && (v2.getAngle(this) <= v2.getAngle(v1));
 	}
 	
 	public double getY() {
