@@ -28,6 +28,7 @@ public class ServerMain extends StateBasedGame{
 		AppGameContainer apgc;
 		try {
 			apgc = new AppGameContainer(new ServerMain("PRO"), 640, 480, false);
+			apgc.setTargetFrameRate(60);
 			apgc.start();
 		} catch (SlickException e) {
 			e.printStackTrace();

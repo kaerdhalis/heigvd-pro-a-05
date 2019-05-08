@@ -32,12 +32,12 @@ public class Wizard {
         id_generator++;
     }
 
-    public void castSpell(ShieldSpell spell) {
-    	shield = spell;
+    public ShieldSpell getShield(){
+        return shield;
     }
 
-    public AttackSpell castSpell(AttackSpell spell, Wizard target) {
-    	return spell;
+    public void setShield(ShieldSpell spell) {
+    	shield = spell;
     }
 
     public boolean checkCollision(AttackSpell spell) {
@@ -49,17 +49,27 @@ public class Wizard {
     
     public void getHit(AttackSpell spell) {
     	if(shield != null) {
-    		shield = null;
+    	    if(shield.getType() == spell.getType()){
+                System.out.println("I shielded "+ spell.computePower() +" damage with my " + spell.getType().name() + " shield.");
+                shield.setOver();
+                shield = null;
+            } else {
+    	        takeDamage(spell);
+            }
     	} else {
-    		System.out.println("Ouch i took "+ spell.getPower() +" damage pts");
-    		healthPoint -= spell.getPower();
-    		
-    		// Killing blow
-    		if (healthPoint <= 0) {
-    			System.out.println("Me dead");
-    			isDead = true;
-    		}
+           takeDamage(spell);
     	}
+    }
+
+    private void takeDamage(AttackSpell spell){
+        System.out.println("Ouch i took "+ spell.computePower() +" damage pts");
+        healthPoint -= spell.computePower();
+
+        // Killing blow
+        if (healthPoint <= 0) {
+            System.out.println("Me dead");
+            isDead = true;
+        }
     }
     
     public int getX() {
@@ -113,11 +123,13 @@ public class Wizard {
     public void render(Graphics g) throws SlickException {
         g.setColor(new Color(0, 0, 0));
         g.fillOval(x - 16, y - 16, 32, 32);
+        if(shield != null) {
+            shield.render(g);
+        }
     }
     
     public boolean isTarget(Wizard wizard, Vector direction) {	
     	Vector v = new Vector(wizard.x, x, wizard.y, y);
-    	
-    	return v.contained(new Vector(direction, Math.PI / 6), new Vector(direction, -Math.PI / 6));
+    	return v.contained(new Vector(direction, Math.PI / 8), new Vector(direction, -Math.PI / 8));
     }
 }
