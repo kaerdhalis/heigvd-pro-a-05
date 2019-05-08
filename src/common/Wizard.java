@@ -1,11 +1,15 @@
 package common;
+import common.spells.ElementalOrb;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 
 import common.spells.AttackSpell;
 import common.spells.ShieldSpell;
+import sun.awt.image.ImageWatched;
 import util.Vector;
+
+import java.util.*;
 
 /**
  * Class representing a wizard.
@@ -16,7 +20,8 @@ public class Wizard {
     private int healthPoint = 100;
     private boolean isDead = false;
     private int id;
-    private ShieldSpell shield = null;
+    private LinkedList<ShieldSpell> shield = new LinkedList<>();
+    private LinkedList<ElementalOrb> orbs = new LinkedList<>();
 
     /**
      * Constructor, generating a unique id for the wizard.
@@ -32,27 +37,48 @@ public class Wizard {
         id_generator++;
     }
 
-    public ShieldSpell getShield(){
+    public LinkedList<ElementalOrb> getOrbs() {
+        return orbs;
+    }
+
+    public void addOrb(ElementalOrb orb) {
+        this.orbs.add(orb);
+    }
+
+    public LinkedList<ShieldSpell> getShield(){
         return shield;
     }
 
-    public void setShield(ShieldSpell spell) {
-    	shield = spell;
+    public void addShield(ShieldSpell spell) {
+    	shield.add(spell);
     }
 
     public boolean checkCollision(AttackSpell spell) {
-    	double deltaX = spell.getX() - x;
-    	double deltaY = spell.getY() - y;
+        if(spell.getTarget() == this) {
+            double deltaX = spell.getX() - x;
+            double deltaY = spell.getY() - y;
+            return Math.sqrt(deltaX * deltaX + deltaY * deltaY) <= 8;
+        } else {
+            return false;
+        }
     	
-    	return Math.sqrt(deltaX * deltaX + deltaY * deltaY) <= 8;
+
     }
     
     public void getHit(AttackSpell spell) {
-    	if(shield != null) {
-    	    if(shield.getType() == spell.getType()){
-                System.out.println("I shielded "+ spell.computePower() +" damage with my " + spell.getType().name() + " shield.");
-                shield.setOver();
-                shield = null;
+        boolean shielded = false;
+        int indexShield = -1;
+    	if(!shield.isEmpty()) {
+    	    for(int i = 0; i < shield.size(); i++) {
+                if (shield.get(i).getType() == spell.getType()) {
+                    shielded = true;
+                    indexShield = i;
+                }
+            }
+    	    if(shielded) {
+                System.out.println("I shielded " + spell.computePower() + " damage with my " + spell.getType().name() + " shield.");
+                shield.get(indexShield).setOver();
+                shield.remove(indexShield);
             } else {
     	        takeDamage(spell);
             }
@@ -123,8 +149,10 @@ public class Wizard {
     public void render(Graphics g) throws SlickException {
         g.setColor(new Color(0, 0, 0));
         g.fillOval(x - 16, y - 16, 32, 32);
-        if(shield != null) {
-            shield.render(g);
+        if(!shield.isEmpty()) {
+            for(int i = 0; i < shield.size(); i++) {
+                shield.get(i).render(g);
+            }
         }
     }
     

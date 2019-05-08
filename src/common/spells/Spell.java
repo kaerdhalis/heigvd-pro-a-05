@@ -7,11 +7,12 @@ public abstract class Spell {
     private Quality quality;
     private MagicType type;
 
-    public Spell(int x, int y, Quality quality, MagicType type) {
-    	this.x = x;
-    	this.y = y;
-        this.quality = quality;
-        this.type = type;
+
+    public Spell(ElementalOrb orb) {
+        this.x = orb.getX();
+        this.y = orb.getY();
+        this.quality = orb.getQuality();
+        this.type = orb.getType();
     }
 
     public void move(int x, int y) {
@@ -53,10 +54,6 @@ public abstract class Spell {
             default:
                 return Color.black;
         }
-    }
-
-    public Quality getQuality() {
-        return quality;
     }
 
     public MagicType getType() {
