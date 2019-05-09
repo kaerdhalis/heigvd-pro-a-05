@@ -60,12 +60,18 @@ public class Wizard {
      * @return a boolean that indicate if the adding was successfull.
      */
     public boolean addOrb(ElementalOrb orb) {
-        boolean render = false;
-        if(orbs.size() < 4) {
-            this.orbs.add(orb);
-            render = true;
+        int count = 0;
+        for(int i = 0; i < orbs.size(); i++){
+            if(!orbs.get(i).isPrepared()){
+                count++;
+            }
         }
-        return render;
+        if(count < 4){
+            orbs.add(orb);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -93,7 +99,12 @@ public class Wizard {
         if(spell.getTarget() == this) {
             double deltaX = spell.getX() - x;
             double deltaY = spell.getY() - y;
-            return Math.sqrt(deltaX * deltaX + deltaY * deltaY) <= 8;
+            if(Math.sqrt(deltaX * deltaX + deltaY * deltaY) <= 8){
+                spell.setOver();
+                return true;
+            } else{
+                return false;
+            }
         } else {
             return false;
         }
@@ -213,12 +224,12 @@ public class Wizard {
 
     /**
      * Method used to check whether the wizard is the target of a spell using a direction vector.
-     * @param wizard the caster of the spell
+     * @param caster the caster of the spell
      * @param direction the direction in which the spell was thrown
-     * @return true if this wizard was the intended target, false otherwise.
+     * @return the angle between the direction and the vector between the caster and this wizard.
      */
-    public boolean isTarget(Wizard wizard, Vector direction) {	
-    	Vector v = new Vector(wizard.x, x, wizard.y, y);
-    	return v.contained(new Vector(direction, Math.PI / 8), new Vector(direction, -Math.PI / 8));
+    public double getAngle(Wizard caster, Vector direction) {
+    	Vector v = new Vector(caster.x, x, caster.y, y);
+    	return v.getAngle(direction);
     }
 }

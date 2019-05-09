@@ -1,21 +1,22 @@
 package common.spells;
 
 import common.Wizard;
-import javafx.util.Pair;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
+import util.Vector;
 
-import java.util.ArrayList;
-
-public class ElementalOrb {
-    protected int x, y;
+public class ElementalOrb implements Movable{
+    private double x, y;
+    private double angle = 0;
     private Wizard caster;
     private Quality quality;
     private MagicType type;
-    private int index;
+    private double speed = Math.PI / 50;
     private double radius = 30.0;
-    private ArrayList<Pair<Integer, Integer>> trajectory;
+    private boolean cast = false;
+    private boolean prepare = false;
+    private Vector targetVector = new Vector();
 
     /**
      * Constructor of a magic orb, used to build powerfull spell
@@ -25,11 +26,30 @@ public class ElementalOrb {
      */
     public ElementalOrb(Wizard caster, Quality quality, MagicType type) {
         this.x = caster.getX();
-        this.y = caster.getY();
+        this.y = caster.getY() - radius;
         this.quality = quality;
         this.type = type;
         this.caster = caster;
-        this.trajectory = computeTrajectory();
+    }
+
+    public void setTargetVector(Vector v){
+        targetVector = v;
+    }
+
+    public Vector getTargetVector(){
+        return targetVector;
+    }
+
+    public void setPrepare(){
+        this.prepare = true;
+    }
+
+    public boolean isPrepared(){
+        return prepare;
+    }
+
+    public boolean isCast(){
+        return cast;
     }
 
     /**
@@ -41,46 +61,32 @@ public class ElementalOrb {
     }
 
     /**
-     * Method used to compute the trajectory of the orb around the caster
-     * @return an array of positions representing the trajectory.
-     */
-    private ArrayList<Pair<Integer, Integer>> computeTrajectory() {
-        ArrayList<Pair<Integer,Integer>> result = new ArrayList<>();
-        for(double d  = 0.0; d < Math.PI*2; d = d + 0.05) {
-            result.add(new Pair<>((int)(Math.cos(d) * radius) + caster.getX(), (int) (Math.sin(d) * radius) + caster.getY()));
-        }
-        return result;
-    }
-
-    /**
      * Method used to render the orb
      * @param g the graphics
      * @throws SlickException in case of emergency.
      */
     public void render(Graphics g) throws SlickException {
         g.setColor(getColor());
-        g.fillOval(x - 8, y - 8, 16, 16);
+        g.fillOval((int)x - 8, (int)y - 8, 16, 16);
     }
 
     /**
      * Method used to move the orb on the trajectory.
      */
     public void move() {
-        if(index == trajectory.size()){
-            index = 0;
+        this.x = caster.getX() - radius * Math.sin(angle);
+        this.y = caster.getY() - radius * Math.cos(angle);
+        angle -= speed;
+        if(prepare && x-caster.getX() <= 0.01 && y-caster.getY()+radius <= 0.01){
+            this.cast = true;
         }
-        if (index < trajectory.size()){
-            this.x = trajectory.get(index).getKey();
-            this.y = trajectory.get(index).getValue();
-        }
-        index++;
     }
 
     /**
      * Getter of the x coordinate of the orb.
      * @return the x coordinate of the orb.
      */
-    public int getX() {
+    public double getX() {
         return x;
     }
 
@@ -88,7 +94,7 @@ public class ElementalOrb {
      * Getter of the y coordinate of the orb
      * @return the y coordinate of the orb.
      */
-    public int getY() {
+    public double getY() {
         return y;
     }
 

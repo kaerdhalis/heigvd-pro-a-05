@@ -52,7 +52,12 @@ public class ShieldSpell extends Spell {
         g.setColor(getColor());
         g.setLineWidth(4);
         //g.drawOval(orb.getCaster().getX() - 18 - radius/2 - counter, orb.getCaster().getY() - 18 - radius/2 - counter, 36 + radius + counter*2, 36 + radius + counter*2 );
-        g.drawArc(orb.getCaster().getX() - 18 - radius/2 - counter, orb.getCaster().getY() - 18 - radius/2 - counter, 36 + radius + counter*2, 36 + radius + counter*2, getArcBounds().getKey() , getArcBounds().getValue());
+        g.drawArc(orb.getCaster().getX() - 18 - radius/2 - counter,
+                orb.getCaster().getY() - 18 - radius/2 - counter,
+                36 + radius + counter*2, 36 + radius + counter*2,
+                getArcBounds().getKey() ,
+                getArcBounds().getValue());
+
         frameCounter--;
         if(!orb.getCaster().getShield().isEmpty() && frameCounter == 0){
             orb.getCaster().getShield().clear();
@@ -67,13 +72,6 @@ public class ShieldSpell extends Spell {
     public boolean isOver(){
         counter = -1;
         return over;
-    }
-
-    /**
-     * Method used to set the boolean over to true.
-     */
-    public void setOver(){
-        over = true;
     }
 
 }
