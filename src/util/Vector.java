@@ -41,6 +41,14 @@ public class Vector {
 		this(0, 0);
 	}
 
+	public void normalize(){
+		double x2 = x*x;
+		double y2 = y*y;
+		double norm = Math.sqrt(x2+y2);
+		this.x /= norm;
+		this.y /= norm;
+	}
+
 	/**
 	 * Returns the angle in radians formed by the vector 
 	 * 

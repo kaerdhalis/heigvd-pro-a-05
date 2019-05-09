@@ -36,8 +36,8 @@ public class Game extends BasicGameState {
 		elementalOrbstoRemove = new LinkedList<>();
 	    wizards.add(new Wizard(135, 245));
 	    wizards.add(new Wizard(489, 245));
-	    //wizards.add(new Wizard(312, 68));
-	    //wizards.add(new Wizard(312, 422));
+	    wizards.add(new Wizard(312, 68));
+	    wizards.add(new Wizard(312, 422));
 		setId();
 	}
 
@@ -98,7 +98,11 @@ public class Game extends BasicGameState {
 
 			for(ElementalOrb orb : wizard.getOrbs()){
 				orb.move();
+				if(orb.isCast()){
+					castAttack(orb.getTargetVector(), wizard);
+				}
 			}
+			wizard.getOrbs().removeAll(elementalOrbstoRemove);
 		}
 	}
 
@@ -110,8 +114,10 @@ public class Game extends BasicGameState {
 
 	public void mouseClicked(int button, int x, int y, int clickCount) {
 		if (button == 0) {
-			Vector v = new Vector(100, 0);
-			castAttack(v, wizards.get(0));
+			for(ElementalOrb orb : wizards.get(0).getOrbs()){
+				orb.setPrepare();
+				orb.setTargetVector(new Vector(wizards.get(0).getX(), x, wizards.get(0).getY(), y));
+			}
 		}
 
 		if (button == 1) {
@@ -154,17 +160,34 @@ public class Game extends BasicGameState {
 	}
 	
 	private void castAttack(Vector v, Wizard caster){
-		for (Wizard target : wizards) {
+		Wizard target = findTarget(v, caster);
+		if(target != null) {
 			LinkedList<ElementalOrb> orbs = caster.getOrbs();
-			if ((!target.equals(caster)) && target.isTarget(caster, v) && orbs != null) {
-				for(int i = 0; i < orbs.size(); i++) {
-					ElementalOrb orb = orbs.get(i);
-					attackSpells.add(new AttackSpell(orb, target));
-					elementalOrbstoRemove.add(orb);
+			if ((!target.equals(caster)) && orbs != null) {
+				for (int i = 0; i < orbs.size(); i++) {
+					if (orbs.get(i).isCast()) {
+						ElementalOrb orb = orbs.get(i);
+						attackSpells.add(new AttackSpell(orb, target));
+						elementalOrbstoRemove.add(orb);
+					}
 				}
-				orbs.clear();
 			}
 		}
+	}
+
+	private Wizard findTarget (Vector v, Wizard caster){
+		Wizard result = null;
+		double minAngle = 10;
+		for(Wizard target : wizards){
+			if(target != caster) {
+				double angle = v.getAngle(new Vector(caster.getX(), target.getX(), caster.getY(), target.getY()));
+				if (angle < minAngle) {
+					minAngle = angle;
+					result = target;
+				}
+			}
+		}
+		return result;
 	}
 
 	private void castOrb(Wizard caster, Quality qual, MagicType type){
