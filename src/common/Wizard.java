@@ -6,7 +6,6 @@ import org.newdawn.slick.SlickException;
 
 import common.spells.AttackSpell;
 import common.spells.ShieldSpell;
-import util.Vector;
 
 import java.util.*;
 
@@ -220,16 +219,5 @@ public class Wizard {
                 shield.get(i).render(g);
             }
         }
-    }
-
-    /**
-     * Method used to check whether the wizard is the target of a spell using a direction vector.
-     * @param caster the caster of the spell
-     * @param direction the direction in which the spell was thrown
-     * @return the angle between the direction and the vector between the caster and this wizard.
-     */
-    public double getAngle(Wizard caster, Vector direction) {
-    	Vector v = new Vector(caster.x, x, caster.y, y);
-    	return v.getAngle(direction);
     }
 }
