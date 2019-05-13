@@ -21,6 +21,9 @@ public class Game extends BasicGameState {
 	private LinkedList<AttackSpell> attackSpells, attackSpellstoRemove;
 	private LinkedList<ShieldSpell> shieldSpells, shieldSpellstoRemove;
 	private LinkedList<ElementalOrb> elementalOrbs, elementalOrbstoRemove;
+	private static String[] args = new String[3];
+	private static boolean changed;
+	private static int id;
 
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
@@ -67,7 +70,7 @@ public class Game extends BasicGameState {
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int a) throws SlickException {
 		remove();
-		
+		checkUpdate();
 		for(AttackSpell as : attackSpells) {
 			as.move();
 			for(Wizard wizard : wizards) {
@@ -223,15 +226,34 @@ public class Game extends BasicGameState {
 			}
 		}
 
-		String spellType = requestStringSplit[0];
+		args[0] = requestStringSplit[0];
 		if(request.length > 1) {
-			if (spellType.equals("ATT")) {
-				castAttack(new Vector(Double.parseDouble(requestStringSplit[1]), Double.parseDouble(requestStringSplit[2])), wizards.get(id));
-			} else if (spellType.equals("SHI")) {
+			if (args[0].equals("ATT")) {
+				args[1] = requestStringSplit[1];
+				args[2] = requestStringSplit[2];
+				this.id = id;
+				changed = true;
+			} else if (args[0].equals("SHI")) {
+				this.id = id;
+				changed = true;
+			} else if (args[0].equals("CHA")){
+				this.id = id;
+				args[1] = requestStringSplit[1];
+				args[2] = requestStringSplit[2];
+				changed = true;
+			}
+		}
+	}
+
+	private void checkUpdate(){
+		if(changed){
+			changed = false;
+			if(args[0].equals("ATT")){
+				castAttack(new Vector(Double.parseDouble(args[1]), Double.parseDouble(args[2])), wizards.get(id));
+			} else if(args[0].equals("SHI")){
 				castShield(wizards.get(id));
-			} else if (spellType.equals("CHA")){
-				Quality qual = Quality.values()[Integer.parseInt(requestStringSplit[2].charAt(0) + "")];
-				castOrb(wizards.get(id), qual, MagicType.values()[Integer.parseInt(requestStringSplit[1])]);
+			} else if(args[0].equals("CHA")){
+				castOrb(wizards.get(id), Quality.values()[Integer.parseInt(args[2].charAt(0) + "")], MagicType.values()[Integer.parseInt(args[1])]);
 			}
 		}
 	}
