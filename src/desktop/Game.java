@@ -99,7 +99,7 @@ public class Game extends BasicGameState {
 			for(ElementalOrb orb : wizard.getOrbs()){
 				orb.move();
 				if(orb.isCast()){
-					castAttack(orb.getTargetVector(), wizard);
+					throwAttack(orb.getTarget(), wizard);
 				}
 			}
 			wizard.getOrbs().removeAll(elementalOrbstoRemove);
@@ -114,10 +114,7 @@ public class Game extends BasicGameState {
 
 	public void mouseClicked(int button, int x, int y, int clickCount) {
 		if (button == 0) {
-			for(ElementalOrb orb : wizards.get(0).getOrbs()){
-				orb.setPrepare();
-				orb.setTargetVector(new Vector(wizards.get(0).getX(), x, wizards.get(0).getY(), y));
-			}
+			castAttack(new Vector(wizards.get(1).getX(), x, wizards.get(1).getY(), y), wizards.get(1));
 		}
 
 		if (button == 1) {
@@ -159,11 +156,10 @@ public class Game extends BasicGameState {
 		orbs.clear();
 	}
 	
-	private void castAttack(Vector v, Wizard caster){
-		Wizard target = findTarget(v, caster);
+	private void throwAttack(Wizard target, Wizard caster){
 		if(target != null) {
 			LinkedList<ElementalOrb> orbs = caster.getOrbs();
-			if ((!target.equals(caster)) && orbs != null) {
+			if (orbs != null) {
 				for (int i = 0; i < orbs.size(); i++) {
 					if (orbs.get(i).isCast()) {
 						ElementalOrb orb = orbs.get(i);
@@ -175,13 +171,23 @@ public class Game extends BasicGameState {
 		}
 	}
 
+	private void castAttack(Vector v, Wizard caster){
+		Wizard target = findTarget(v, caster);
+		if(target != null) {
+			for (ElementalOrb orb : caster.getOrbs()) {
+				orb.setPrepare();
+				orb.setTarget(target);
+			}
+		}
+	}
+
 	private Wizard findTarget (Vector v, Wizard caster){
 		Wizard result = null;
 		double minAngle = 10;
 		for(Wizard target : wizards){
 			if(target != caster) {
 				double angle = v.getAngle(new Vector(caster.getX(), target.getX(), caster.getY(), target.getY()));
-				if (angle < minAngle) {
+				if (angle < minAngle && angle < Math.PI/4) {
 					minAngle = angle;
 					result = target;
 				}
@@ -190,24 +196,43 @@ public class Game extends BasicGameState {
 		return result;
 	}
 
-	private void castOrb(Wizard caster, Quality qual, MagicType type){
-		ElementalOrb orb = new ElementalOrb(caster, qual, type);
-		if(caster.addOrb(orb)) {
-			elementalOrbs.add(orb);
-		}
+	private void castOrb(Wizard caster, Quality qual, MagicType type) {
+			ElementalOrb orb = new ElementalOrb(caster, qual, type);
+			if (caster.addOrb(orb)) {
+				elementalOrbs.add(orb);
+			}
 
 	}
 
 	public void parse(int id, byte[] request){
-		String requestString = new String(request);
-		String[] requestStringSplit = requestString.split(" ");
+		String[] requestStringSplit = new String[3];
+		for(int i = 0; i < requestStringSplit.length; i++){
+			requestStringSplit[i] = "";
+		}
+		int indexString = 0;
+
+		for(int i = 0; i < request.length; i++){
+			if(((char)request[i])!='$') {
+				if (((char) request[i]) == ' ') {
+					indexString += 1;
+				} else {
+					requestStringSplit[indexString] += (char) request[i];
+				}
+			} else {
+				break;
+			}
+		}
+
 		String spellType = requestStringSplit[0];
-		MagicType element = MagicType.values()[Integer.parseInt(requestStringSplit[1])];
-		Quality quality = Quality.values()[Integer.parseInt(requestStringSplit[2])];
-		if(spellType.equals("ATT")){
-			castAttack(new Vector(Double.parseDouble(requestStringSplit[3]), Double.parseDouble(requestStringSplit[4])), wizards.get(id));
-		} else if(spellType.equals("SHI")) {
-			castShield(wizards.get(id));
+		if(request.length > 1) {
+			if (spellType.equals("ATT")) {
+				castAttack(new Vector(Double.parseDouble(requestStringSplit[1]), Double.parseDouble(requestStringSplit[2])), wizards.get(id));
+			} else if (spellType.equals("SHI")) {
+				castShield(wizards.get(id));
+			} else if (spellType.equals("CHA")){
+				Quality qual = Quality.values()[Integer.parseInt(requestStringSplit[2].charAt(0) + "")];
+				castOrb(wizards.get(id), qual, MagicType.values()[Integer.parseInt(requestStringSplit[1])]);
+			}
 		}
 	}
 

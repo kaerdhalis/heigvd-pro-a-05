@@ -1,5 +1,6 @@
 package common.spells;
 
+import org.newdawn.slick.Image;
 import util.Vector;
 
 import org.newdawn.slick.Graphics;
@@ -12,6 +13,7 @@ public class AttackSpell extends Spell implements Movable{
 	private Wizard target;
 	private double speed = 3;
 	private double x, y;
+	private Image sprite;
     /**
      * Constructor taking an orb as parameter, and a target
      * @param orb the magic orb used to build the spell
@@ -24,6 +26,7 @@ public class AttackSpell extends Spell implements Movable{
         this.y = orb.getY();
         direction = new Vector(orb.getX(), target.getX(), orb.getY(), target.getY());
         direction.normalize();
+        sprite = getType().getSprite();
     }
 
 
@@ -41,8 +44,11 @@ public class AttackSpell extends Spell implements Movable{
      * @throws SlickException in case of emergency.
      */
     public void render(Graphics g) throws SlickException {
+        sprite.draw((int)x - 8, (int)y - 8);
+        /*
         g.setColor(getColor());
         g.fillOval((int)x - 8, (int)y - 8, 16, 16);
+        */
     }
 
     /**

@@ -3,8 +3,8 @@ package common.spells;
 import common.Wizard;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
-import util.Vector;
 
 public class ElementalOrb implements Movable{
     private double x, y;
@@ -16,7 +16,8 @@ public class ElementalOrb implements Movable{
     private double radius = 30.0;
     private boolean cast = false;
     private boolean prepare = false;
-    private Vector targetVector = new Vector();
+    private Wizard target;
+    private Image sprite;
 
     /**
      * Constructor of a magic orb, used to build powerfull spell
@@ -24,20 +25,13 @@ public class ElementalOrb implements Movable{
      * @param quality the quality of the cast
      * @param type the type of the spell
      */
-    public ElementalOrb(Wizard caster, Quality quality, MagicType type) {
+    public ElementalOrb(Wizard caster, Quality quality, MagicType type){
         this.x = caster.getX();
         this.y = caster.getY() - radius;
         this.quality = quality;
         this.type = type;
         this.caster = caster;
-    }
-
-    public void setTargetVector(Vector v){
-        targetVector = v;
-    }
-
-    public Vector getTargetVector(){
-        return targetVector;
+        this.sprite = type.getSprite();
     }
 
     public void setPrepare(){
@@ -65,9 +59,12 @@ public class ElementalOrb implements Movable{
      * @param g the graphics
      * @throws SlickException in case of emergency.
      */
-    public void render(Graphics g) throws SlickException {
+    public void render(Graphics g) {
+        sprite.draw((int)x -8, (int)y -8);
+        /*
         g.setColor(getColor());
         g.fillOval((int)x - 8, (int)y - 8, 16, 16);
+        */
     }
 
     /**
@@ -99,14 +96,6 @@ public class ElementalOrb implements Movable{
     }
 
     /**
-     * Getter of the color depending of the type of the orb
-     * @return the color of the orb.
-     */
-    public Color getColor(){
-        return type.getColor();
-    }
-
-    /**
      * Getter of the quality of the orb.
      * @return the quality of the orb
      */
@@ -120,5 +109,13 @@ public class ElementalOrb implements Movable{
      */
     public MagicType getType() {
         return type;
+    }
+
+    public void setTarget(Wizard target) {
+        this.target = target;
+    }
+
+    public Wizard getTarget() {
+        return target;
     }
 }

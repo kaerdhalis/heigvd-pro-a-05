@@ -4,6 +4,7 @@ import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
+import server.Handler;
 
 public class ServerMain extends StateBasedGame{
 	private static final int MENU = 0;
@@ -15,6 +16,8 @@ public class ServerMain extends StateBasedGame{
 		super(name);
 		this.addState(new MainMenu());
 		this.addState(new Game());
+		Handler handler = new Handler(8384, (Game)this.getState(GAME));
+		handler.startServer();
 	}
 	
 	@Override

@@ -2,11 +2,11 @@ package common;
 import common.spells.ElementalOrb;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
 import common.spells.AttackSpell;
 import common.spells.ShieldSpell;
-import util.Vector;
 
 import java.util.*;
 
@@ -18,6 +18,7 @@ public class Wizard {
     private int healthPoint = 100;
     private boolean isDead = false;
     private int id;
+    private Image sprite;
     private LinkedList<ShieldSpell> shield = new LinkedList<>();
     private LinkedList<ElementalOrb> orbs = new LinkedList<>();
 
@@ -36,6 +37,11 @@ public class Wizard {
     public Wizard(int x, int y) {
     	this.x = x;
     	this.y = y;
+        try {
+            this.sprite = new Image("img/wizard.png");
+        } catch (SlickException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -213,23 +219,12 @@ public class Wizard {
      * @throws SlickException in case of emergency.
      */
     public void render(Graphics g) throws SlickException {
-        g.setColor(new Color(0, 0, 0));
-        g.fillOval(x - 16, y - 16, 32, 32);
+        this.sprite.draw(x-16, y-16);
+
         if(!shield.isEmpty()) {
             for(int i = 0; i < shield.size(); i++) {
                 shield.get(i).render(g);
             }
         }
-    }
-
-    /**
-     * Method used to check whether the wizard is the target of a spell using a direction vector.
-     * @param caster the caster of the spell
-     * @param direction the direction in which the spell was thrown
-     * @return the angle between the direction and the vector between the caster and this wizard.
-     */
-    public double getAngle(Wizard caster, Vector direction) {
-    	Vector v = new Vector(caster.x, x, caster.y, y);
-    	return v.getAngle(direction);
     }
 }
