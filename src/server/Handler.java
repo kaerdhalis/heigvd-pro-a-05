@@ -1,6 +1,7 @@
 package server;
 
 import desktop.Game;
+import desktop.Server;
 import protocol.Protocol;
 
 import java.io.IOException;
@@ -20,12 +21,10 @@ public class Handler {
 
     final static Logger LOG = Logger.getLogger(Handler.class.getName());
 
-    int listenPort;
-    Game game;
+    private int listenPort;
 
-    public Handler(int port, Game game) {
+    public Handler(int port) {
         this.listenPort = port;
-        this.game = game;
     }
 
     public void startServer(){
@@ -59,7 +58,7 @@ public class Handler {
             LOG.log(Level.INFO, "Waiting for a new client on port {0}", listenPort);
             try {
                 SocketAddress senderAddress;
-                while (IDAddresses.size() != 1) {
+                while (IDAddresses.size() != 2) {
                     senderAddress = channel.receive(receivingBuffer);
                     if (senderAddress != null) {
                         int action = Byte.toUnsignedInt(receivingBuffer.get(0));
@@ -95,7 +94,7 @@ public class Handler {
                             System.out.print((char) receivingBuffer.get(i) + " ");
                         }
                         System.out.println();
-                        game.parse(IDAddresses.get(address), receivingBuffer.array());
+                        ((Game)Server.getInstance().getState(1)).parse(IDAddresses.get(address), receivingBuffer.array());
 
                         receivingBuffer.clear();
                         receivingBuffer.put(new byte[200]);

@@ -6,18 +6,24 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 import server.Handler;
 
-public class ServerMain extends StateBasedGame{
+public class Server extends StateBasedGame{
 	private static final int MENU = 0;
 	private static final int CREDITS = 2;
 	private static final int GAME = 1;
+
+	private static Server instance;
+
+	public static Server getInstance(){
+		if(instance == null){
+			instance = new Server("PRO");
+		}
+		return instance;
+	}
 	
-	
-	public ServerMain(String name) {
+	private Server(String name) {
 		super(name);
 		this.addState(new MainMenu());
 		this.addState(new Game());
-		Handler handler = new Handler(8384, (Game)this.getState(GAME));
-		handler.startServer();
 	}
 	
 	@Override
@@ -27,14 +33,5 @@ public class ServerMain extends StateBasedGame{
 		this.getState(GAME).init(gc, this);
 	}
 
-	public static void main(String[] args) throws SlickException {
-		AppGameContainer apgc;
-		try {
-			apgc = new AppGameContainer(new ServerMain("PRO"), 640, 480, false);
-			apgc.setTargetFrameRate(60);
-			apgc.start();
-		} catch (SlickException e) {
-			e.printStackTrace();
-		}
-	}
+
 }

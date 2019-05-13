@@ -44,7 +44,8 @@ public class AttackSpell extends Spell implements Movable{
      * @throws SlickException in case of emergency.
      */
     public void render(Graphics g) throws SlickException {
-        sprite.draw((int)x - 8, (int)y - 8);
+        //sprite.draw((int)x - 8, (int)y - 8);
+        g.drawImage(sprite, (int)x - 8, (int)y - 8);
         /*
         g.setColor(getColor());
         g.fillOval((int)x - 8, (int)y - 8, 16, 16);

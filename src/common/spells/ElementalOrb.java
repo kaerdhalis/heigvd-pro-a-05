@@ -60,7 +60,7 @@ public class ElementalOrb implements Movable{
      * @throws SlickException in case of emergency.
      */
     public void render(Graphics g) {
-        sprite.draw((int)x -8, (int)y -8);
+        g.drawImage(sprite, (int)x - 8, (int)y - 8);
         /*
         g.setColor(getColor());
         g.fillOval((int)x - 8, (int)y - 8, 16, 16);
