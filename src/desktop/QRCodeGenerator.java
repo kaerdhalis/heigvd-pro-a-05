@@ -14,35 +14,33 @@ import java.util.Enumeration;
 
 public class QRCodeGenerator {
 
-    private static final String QR_CODE_IMAGE_PATH = "./qr.png";
-    private static final String PORT = "6666";
+    private static final String QR_CODE_IMAGE_PATH = "./img/qr.jpg";
+    private static final String PORT = "8384";
 
     /**
-     * Genère le QR code contenant les IPs du serveur ainsi que le port
+     * Generate QR code with the server's IPs and port
      * Source : https://www.callicoder.com/generate-qr-code-in-java-using-zxing/
      * @param width  :  int, largeur du QR code
      * @param height : int, hauteur du QR code
      * @throws WriterException :
      * @throws IOException     :
      */
-    public static void generateQRCodeImageWithIPsAndPort(int width, int height)
-            throws WriterException, IOException {
-        String text = getServerIPs() + "\nPort\n" + PORT;
+    public static void generateQRCodeImageWithIPsAndPort(int width, int height) throws WriterException, IOException {
+        String text = getServerIPs() + "\n" + PORT;
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
         BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height);
 
         Path path = FileSystems.getDefault().getPath(QR_CODE_IMAGE_PATH);
-        MatrixToImageWriter.writeToPath(bitMatrix, "PNG", path);
+        MatrixToImageWriter.writeToPath(bitMatrix, "jpg", path);
     }
 
     /**
-     * Retourne un String contenant toutes les IPs du serveur.
-     * retour à la ligne.
+     * Return String with all the server's IPs separated by a space
      * Source : https://stackoverflow.com/questions/9481865/getting-the-ip-address-of-the-current-machine-using-java
-     * @return : String, IPs du serveur, séparée par "\n"
+     * @return : String, Server's IPs
      */
     private static String getServerIPs() {
-        String serverIPs = "IPs\n";
+        String serverIPs = "";
 
         try {
             Enumeration networkInterfaces = NetworkInterface.getNetworkInterfaces();
@@ -54,9 +52,9 @@ public class QRCodeGenerator {
                 {
                     InetAddress i = (InetAddress) addresses.nextElement();
 
-                    // Garde seulement les adresses IPv4
+                    // Keep only IPv4
                     if(i instanceof Inet4Address && !i.isLoopbackAddress()) {
-                        serverIPs += i.getHostAddress() + "\n";
+                        serverIPs += i.getHostAddress() + " ";
                     }
                 }
             }
