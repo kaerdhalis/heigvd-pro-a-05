@@ -1,6 +1,7 @@
 package common.spells;
 
 import javafx.util.Pair;
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
 
@@ -49,7 +50,7 @@ public class ShieldSpell extends Spell {
      * @throws SlickException in case of emergency.
      */
     public void render(Graphics g) throws SlickException {
-        g.setColor(getColor());
+        g.setColor(Color.black);
         g.setLineWidth(4);
         //g.drawOval(orb.getCaster().getX() - 18 - radius/2 - counter, orb.getCaster().getY() - 18 - radius/2 - counter, 36 + radius + counter*2, 36 + radius + counter*2 );
         g.drawArc(orb.getCaster().getX() - 18 - radius/2 - counter,

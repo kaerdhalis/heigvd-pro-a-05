@@ -21,6 +21,9 @@ public class Game extends BasicGameState {
 	private LinkedList<AttackSpell> attackSpells, attackSpellstoRemove;
 	private LinkedList<ShieldSpell> shieldSpells, shieldSpellstoRemove;
 	private LinkedList<ElementalOrb> elementalOrbs, elementalOrbstoRemove;
+	private static String[] args = new String[3];
+	private static boolean changed;
+	private static int id;
 
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
@@ -67,7 +70,7 @@ public class Game extends BasicGameState {
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int a) throws SlickException {
 		remove();
-		
+		checkUpdate();
 		for(AttackSpell as : attackSpells) {
 			as.move();
 			for(Wizard wizard : wizards) {
@@ -99,7 +102,7 @@ public class Game extends BasicGameState {
 			for(ElementalOrb orb : wizard.getOrbs()){
 				orb.move();
 				if(orb.isCast()){
-					castAttack(orb.getTargetVector(), wizard);
+					throwAttack(orb.getTarget(), wizard);
 				}
 			}
 			wizard.getOrbs().removeAll(elementalOrbstoRemove);
@@ -114,10 +117,7 @@ public class Game extends BasicGameState {
 
 	public void mouseClicked(int button, int x, int y, int clickCount) {
 		if (button == 0) {
-			for(ElementalOrb orb : wizards.get(0).getOrbs()){
-				orb.setPrepare();
-				orb.setTargetVector(new Vector(wizards.get(0).getX(), x, wizards.get(0).getY(), y));
-			}
+			castAttack(new Vector(wizards.get(1).getX(), x, wizards.get(1).getY(), y), wizards.get(1));
 		}
 
 		if (button == 1) {
@@ -159,11 +159,10 @@ public class Game extends BasicGameState {
 		orbs.clear();
 	}
 	
-	private void castAttack(Vector v, Wizard caster){
-		Wizard target = findTarget(v, caster);
+	private void throwAttack(Wizard target, Wizard caster){
 		if(target != null) {
 			LinkedList<ElementalOrb> orbs = caster.getOrbs();
-			if ((!target.equals(caster)) && orbs != null) {
+			if (orbs != null) {
 				for (int i = 0; i < orbs.size(); i++) {
 					if (orbs.get(i).isCast()) {
 						ElementalOrb orb = orbs.get(i);
@@ -175,13 +174,23 @@ public class Game extends BasicGameState {
 		}
 	}
 
+	private void castAttack(Vector v, Wizard caster){
+		Wizard target = findTarget(v, caster);
+		if(target != null) {
+			for (ElementalOrb orb : caster.getOrbs()) {
+				orb.setPrepare();
+				orb.setTarget(target);
+			}
+		}
+	}
+
 	private Wizard findTarget (Vector v, Wizard caster){
 		Wizard result = null;
 		double minAngle = 10;
 		for(Wizard target : wizards){
 			if(target != caster) {
 				double angle = v.getAngle(new Vector(caster.getX(), target.getX(), caster.getY(), target.getY()));
-				if (angle < minAngle) {
+				if (angle < minAngle && angle < Math.PI/4) {
 					minAngle = angle;
 					result = target;
 				}
@@ -190,24 +199,62 @@ public class Game extends BasicGameState {
 		return result;
 	}
 
-	private void castOrb(Wizard caster, Quality qual, MagicType type){
-		ElementalOrb orb = new ElementalOrb(caster, qual, type);
-		if(caster.addOrb(orb)) {
-			elementalOrbs.add(orb);
-		}
+	private void castOrb(Wizard caster, Quality qual, MagicType type) {
+			ElementalOrb orb = new ElementalOrb(caster, qual, type);
+			if (caster.addOrb(orb)) {
+				elementalOrbs.add(orb);
+			}
 
 	}
 
 	public void parse(int id, byte[] request){
-		String requestString = new String(request);
-		String[] requestStringSplit = requestString.split(" ");
-		String spellType = requestStringSplit[0];
-		MagicType element = MagicType.values()[Integer.parseInt(requestStringSplit[1])];
-		Quality quality = Quality.values()[Integer.parseInt(requestStringSplit[2])];
-		if(spellType.equals("ATT")){
-			castAttack(new Vector(Double.parseDouble(requestStringSplit[3]), Double.parseDouble(requestStringSplit[4])), wizards.get(id));
-		} else if(spellType.equals("SHI")) {
-			castShield(wizards.get(id));
+		String[] requestStringSplit = new String[3];
+		for(int i = 0; i < requestStringSplit.length; i++){
+			requestStringSplit[i] = "";
+		}
+		int indexString = 0;
+
+		for(int i = 0; i < request.length; i++){
+			if(((char)request[i])!='$') {
+				if (((char) request[i]) == ' ') {
+					indexString += 1;
+				} else {
+					requestStringSplit[indexString] += (char) request[i];
+				}
+			} else {
+				break;
+			}
+		}
+
+		args[0] = requestStringSplit[0];
+		if(request.length > 1) {
+			if (args[0].equals("ATT")) {
+				args[1] = requestStringSplit[1];
+				args[2] = requestStringSplit[2];
+				this.id = id;
+				changed = true;
+			} else if (args[0].equals("SHI")) {
+				this.id = id;
+				changed = true;
+			} else if (args[0].equals("CHA")){
+				this.id = id;
+				args[1] = requestStringSplit[1];
+				args[2] = requestStringSplit[2];
+				changed = true;
+			}
+		}
+	}
+
+	private void checkUpdate(){
+		if(changed){
+			changed = false;
+			if(args[0].equals("ATT")){
+				castAttack(new Vector(Double.parseDouble(args[1]), Double.parseDouble(args[2])), wizards.get(id));
+			} else if(args[0].equals("SHI")){
+				castShield(wizards.get(id));
+			} else if(args[0].equals("CHA")){
+				castOrb(wizards.get(id), Quality.values()[Integer.parseInt(args[2].charAt(0) + "")], MagicType.values()[Integer.parseInt(args[1])]);
+			}
 		}
 	}
 

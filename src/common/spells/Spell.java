@@ -33,14 +33,6 @@ public abstract class Spell {
     }
 
     /**
-     * Method used to get the color of the spell depending of it's type.
-     * @return
-     */
-    public Color getColor(){
-        return type.getColor();
-    }
-
-    /**
      * Getter of the type
      * @return the type of the spell.
      */
