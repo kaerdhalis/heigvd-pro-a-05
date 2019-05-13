@@ -1,9 +1,9 @@
 package desktop;
 
 import java.util.LinkedList;
+import java.util.Random;
 
-import common.spells.Quality;
-import common.spells.ShieldSpell;
+import common.spells.*;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.SlickException;
@@ -12,8 +12,6 @@ import org.newdawn.slick.state.StateBasedGame;
 import org.newdawn.slick.tiled.TiledMap;
 
 import common.Wizard;
-import common.spells.AttackSpell;
-import common.spells.MagicType;
 import util.Vector;
 
 public class Game extends BasicGameState {
@@ -22,6 +20,7 @@ public class Game extends BasicGameState {
 	private LinkedList<Wizard> wizards, wizardsToRemove;
 	private LinkedList<AttackSpell> attackSpells, attackSpellstoRemove;
 	private LinkedList<ShieldSpell> shieldSpells, shieldSpellstoRemove;
+	private LinkedList<ElementalOrb> elementalOrbs, elementalOrbstoRemove;
 
 	@Override
 	public void init(GameContainer gc, StateBasedGame sbg) throws SlickException {
@@ -33,10 +32,21 @@ public class Game extends BasicGameState {
 	    shieldSpellstoRemove = new LinkedList<>();
 	    shieldSpells = new LinkedList<>();
 	    attackSpells = new LinkedList<>();
+	    elementalOrbs = new LinkedList<>();
+		elementalOrbstoRemove = new LinkedList<>();
 	    wizards.add(new Wizard(135, 245));
 	    wizards.add(new Wizard(489, 245));
 	    wizards.add(new Wizard(312, 68));
 	    wizards.add(new Wizard(312, 422));
+		setId();
+	}
+
+	private void setId(){
+		int id = 0;
+		for(Wizard w : wizards){
+			w.setId(id);
+			id++;
+		}
 	}
 
 	@Override
@@ -48,22 +58,15 @@ public class Game extends BasicGameState {
 		for(AttackSpell as : attackSpells) {
 			as.render(g);
 		}
+		for(ElementalOrb orb : elementalOrbs){
+			orb.render(g);
+		}
+
 	}
 
 	@Override
 	public void update(GameContainer gc, StateBasedGame sbg, int a) throws SlickException {
-		for(AttackSpell as : attackSpellstoRemove) {
-			attackSpells.remove(as);
-		}
-		attackSpellstoRemove.clear();
-		for(ShieldSpell sp : shieldSpellstoRemove) {
-			shieldSpells.remove(sp);
-		}
-		shieldSpellstoRemove.clear();
-		for(Wizard wizard : wizardsToRemove) {
-			wizards.remove(wizard);
-		}
-		wizardsToRemove.clear();
+		remove();
 		
 		for(AttackSpell as : attackSpells) {
 			as.move();
@@ -71,6 +74,12 @@ public class Game extends BasicGameState {
 				if(wizard.checkCollision(as)) {
 					wizard.getHit(as);
 					attackSpellstoRemove.add(as);
+					if(wizard.getOrbs().size() != 0) {
+						for (int i = 0; i < wizard.getOrbs().size(); i++) {
+							elementalOrbstoRemove.add(wizard.getOrbs().get(i));
+						}
+						wizard.getOrbs().clear();
+					}
 				}
 			}
 			if(as.isOver())
@@ -86,6 +95,14 @@ public class Game extends BasicGameState {
 		for(Wizard wizard : wizards) {
 			if(wizard.isDead())
 				wizardsToRemove.add(wizard);
+
+			for(ElementalOrb orb : wizard.getOrbs()){
+				orb.move();
+				if(orb.isCast()){
+					castAttack(orb.getTargetVector(), wizard);
+				}
+			}
+			wizard.getOrbs().removeAll(elementalOrbstoRemove);
 		}
 	}
 
@@ -97,100 +114,123 @@ public class Game extends BasicGameState {
 
 	public void mouseClicked(int button, int x, int y, int clickCount) {
 		if (button == 0) {
-			Vector v = new Vector(wizards.get(3).getX(), x, wizards.get(3).getY(), y);
-
-			for (Wizard wizard : wizards) {
-				if ((!wizard.equals(wizards.get(3))) && wizard.isTarget(wizards.get(3), v
-				)) {
-					attackSpells.add(new AttackSpell(Quality.PERFECT, MagicType.FIRE, wizards.get(3), wizard));
-				}
+			for(ElementalOrb orb : wizards.get(0).getOrbs()){
+				orb.setPrepare();
+				orb.setTargetVector(new Vector(wizards.get(0).getX(), x, wizards.get(0).getY(), y));
 			}
 		}
 
 		if (button == 1) {
-			if (wizards.get(1).getShield() == null) {
-				shieldSpells.add(new ShieldSpell(Quality.PERFECT, MagicType.FIRE, wizards.get(1)));
-			} else {
-				shieldSpellstoRemove.add(wizards.get(1).getShield());
-				shieldSpells.add(new ShieldSpell(Quality.PERFECT, MagicType.LIGHTNING, wizards.get(1)));
-			}
+			Random r = new Random();
+			int i = r.nextInt(4);
+			castOrb(wizards.get(0), Quality.PERFECT, MagicType.values()[i]);
 		}
 	}
 
 	public void keyPressed(int key, char c){
 		if(null != wizards) {
 			if (c == 'q') {
-				castShield(Quality.PERFECT, MagicType.FIRE, wizards.get(0));
-			}
-			if (c == 'w') {
-				castShield(Quality.PERFECT, MagicType.WATER, wizards.get(1));
-			}
-			if (c == 'e') {
-				castShield(Quality.PERFECT, MagicType.WATER, wizards.get(2));
-			}
-			if (c == 'r') {
-				castShield(Quality.PERFECT, MagicType.LIGHTNING, wizards.get(3));
-			}
-			if(c == 'a'){
-				castAttack(489,245, Quality.PERFECT, MagicType.FIRE, wizards.get(0));
-			}
-			if(c == 's'){
-				castAttack(489,245, Quality.PERFECT, MagicType.EARTH, wizards.get(1));
-			}
-			if(c == 'd'){
-				castAttack(489,245, Quality.PERFECT, MagicType.WATER, wizards.get(2));
-			}
-			if(c == 'f'){
-				castAttack(489,245, Quality.PERFECT, MagicType.LIGHTNING, wizards.get(3));
+				Random r = new Random();
+				int i = r.nextInt(4);
+				castOrb(wizards.get(1), Quality.PERFECT, MagicType.values()[i]);
 			}
 		}
-		if(!(wizards.size()<2)) {
-			if (c == 'u') {
-				castShield(Quality.PERFECT, MagicType.FIRE, wizards.get(1));
-			}
-			if (c == 'i') {
-				castShield(Quality.PERFECT, MagicType.EARTH, wizards.get(1));
-			}
-			if (c == 'o') {
-				castShield(Quality.PERFECT, MagicType.WATER, wizards.get(1));
-			}
-			if (c == 'p') {
-				castShield(Quality.PERFECT, MagicType.LIGHTNING, wizards.get(1));
-			}
-
-			if (c == 'j') {
-				castAttack(135, 245, Quality.PERFECT, MagicType.FIRE, wizards.get(1));
-			}
-			if (c == 'k') {
-				castAttack(135, 245, Quality.PERFECT, MagicType.EARTH, wizards.get(1));
-			}
-			if (c == 'l') {
-				castAttack(135, 245, Quality.PERFECT, MagicType.WATER, wizards.get(1));
-			}
-			if (c == 'é') {
-				castAttack(135, 245, Quality.PERFECT, MagicType.LIGHTNING, wizards.get(1));
+		if(null != wizards) {
+			if (c == 'w') {
+				castShield(wizards.get(1));
 			}
 		}
 	}
 
-	private void castShield(Quality quality, MagicType type, Wizard caster){
-		if (caster.getShield() == null) {
-			shieldSpells.add(new ShieldSpell(quality, type, caster));
-		} else {
-			shieldSpellstoRemove.add(caster.getShield());
-			shieldSpells.add(new ShieldSpell(quality, type, caster));
+	private void castShield(Wizard caster){
+		if(caster.getOrbs().size() != 0) {
+			for (int i = 0; i < caster.getShield().size(); i++) {
+				shieldSpellstoRemove.add(caster.getShield().get(i));
+				caster.getShield().get(i).setOver();
+				caster.getShield().clear();
+			}
 		}
+		LinkedList<ElementalOrb> orbs = caster.getOrbs();
+		for(int i = 0; i < orbs.size(); i++) {
+			ElementalOrb orb = orbs.get(i);
+			shieldSpells.add(new ShieldSpell(orb));
+			elementalOrbstoRemove.add(orb);
+		}
+		orbs.clear();
 	}
 	
-	private void castAttack(int x, int y, Quality qual, MagicType type, Wizard caster){
-		Vector v = new Vector(caster.getX(), x, caster.getY(), y);
-
-		for (Wizard target : wizards) {
-			if ((!target.equals(caster)) && target.isTarget(caster, v)) {
-				attackSpells.add(new AttackSpell(qual, type, caster, target));
+	private void castAttack(Vector v, Wizard caster){
+		Wizard target = findTarget(v, caster);
+		if(target != null) {
+			LinkedList<ElementalOrb> orbs = caster.getOrbs();
+			if ((!target.equals(caster)) && orbs != null) {
+				for (int i = 0; i < orbs.size(); i++) {
+					if (orbs.get(i).isCast()) {
+						ElementalOrb orb = orbs.get(i);
+						attackSpells.add(new AttackSpell(orb, target));
+						elementalOrbstoRemove.add(orb);
+					}
+				}
 			}
 		}
 	}
 
+	private Wizard findTarget (Vector v, Wizard caster){
+		Wizard result = null;
+		double minAngle = 10;
+		for(Wizard target : wizards){
+			if(target != caster) {
+				double angle = v.getAngle(new Vector(caster.getX(), target.getX(), caster.getY(), target.getY()));
+				if (angle < minAngle) {
+					minAngle = angle;
+					result = target;
+				}
+			}
+		}
+		return result;
+	}
+
+	private void castOrb(Wizard caster, Quality qual, MagicType type){
+		ElementalOrb orb = new ElementalOrb(caster, qual, type);
+		if(caster.addOrb(orb)) {
+			elementalOrbs.add(orb);
+		}
+
+	}
+
+	public void parse(int id, byte[] request){
+		String requestString = new String(request);
+		String[] requestStringSplit = requestString.split(" ");
+		String spellType = requestStringSplit[0];
+		MagicType element = MagicType.values()[Integer.parseInt(requestStringSplit[1])];
+		Quality quality = Quality.values()[Integer.parseInt(requestStringSplit[2])];
+		if(spellType.equals("ATT")){
+			castAttack(new Vector(Double.parseDouble(requestStringSplit[3]), Double.parseDouble(requestStringSplit[4])), wizards.get(id));
+		} else if(spellType.equals("SHI")) {
+			castShield(wizards.get(id));
+		}
+	}
+
+	private void remove(){
+		for(AttackSpell as : attackSpellstoRemove) {
+			attackSpells.remove(as);
+		}
+		attackSpellstoRemove.clear();
+
+		for(ShieldSpell sp : shieldSpellstoRemove) {
+			shieldSpells.remove(sp);
+		}
+		shieldSpellstoRemove.clear();
+
+		for(Wizard wizard : wizardsToRemove) {
+			wizards.remove(wizard);
+		}
+		wizardsToRemove.clear();
+
+		for(ElementalOrb orb : elementalOrbstoRemove) {
+			elementalOrbs.remove(orb);
+		}
+		elementalOrbstoRemove.clear();
+	}
 
 }

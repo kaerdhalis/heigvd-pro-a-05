@@ -3,62 +3,47 @@ package common.spells;
 import org.newdawn.slick.Color;
 
 public abstract class Spell {
-	protected int x, y;
     private Quality quality;
     private MagicType type;
+    private boolean over;
 
-    public Spell(int x, int y, Quality quality, MagicType type) {
-    	this.x = x;
-    	this.y = y;
-        this.quality = quality;
-        this.type = type;
-    }
-
-    public void move(int x, int y) {
-    	this.x = x;
-    	this.y = y;
-    }
-    
-    public int getX() {
-    	return x;
-    }
-    
-    public int getY() {
-    	return y;
+    /**
+     * Constructor of a spell, taking an orb
+     * @param orb the magical orb used to set the values of the spell
+     */
+    public Spell(ElementalOrb orb) {
+        this.quality = orb.getQuality();
+        this.type = orb.getType();
     }
 
+    public boolean isOver(){
+        return over;
+    }
+
+    public void setOver(){
+        over = true;
+    }
+
+    /**
+     * Method used to compute the power of the spell depending of it's the quality
+     * @return the value of the power of the spell
+     */
     public int computePower(){
-        switch (quality){
-            case PERFECT:
-                return 10;
-            case GOOD:
-                return 5;
-            case OKAY:
-                return 3;
-            default:
-                return 0;
-        }
+        return quality.computePower();
     }
 
+    /**
+     * Method used to get the color of the spell depending of it's type.
+     * @return
+     */
     public Color getColor(){
-        switch (type){
-            case EARTH:
-                return Color.green;
-            case WATER:
-                return Color.blue;
-            case LIGHTNING:
-                return Color.yellow;
-            case FIRE:
-                return Color.red;
-            default:
-                return Color.black;
-        }
+        return type.getColor();
     }
 
-    public Quality getQuality() {
-        return quality;
-    }
-
+    /**
+     * Getter of the type
+     * @return the type of the spell.
+     */
     public MagicType getType() {
         return type;
     }
