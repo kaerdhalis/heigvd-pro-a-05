@@ -1,4 +1,4 @@
-package protocol;
+/*package protocol;
 
 public class Protocol {
     public static final int PRESENCE_DEFAULT_PORT = 5000;
@@ -8,4 +8,4 @@ public class Protocol {
     public static final String CMD_EARTH = "EARTH";
     public static final String CMD_ELECTRICITY = "ELEC";
     public static final String CMD_EXIT = "EXIT";
-}
+}*/

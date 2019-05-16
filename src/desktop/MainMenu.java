@@ -4,7 +4,6 @@ import org.lwjgl.input.Mouse;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
-import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
@@ -34,7 +33,7 @@ public class MainMenu extends BasicGameState {
 		//startGame button pressed
 		if((x > gc.getWidth() / 2 - 50 && x < gc.getWidth() / 2 + 50) && (y > 100 && y < 150)) {
 			if(Mouse.isButtonDown(0)) {
-				arg1.enterState(1);
+				arg1.enterState(3);
 			}
 		}
 		
@@ -48,7 +47,7 @@ public class MainMenu extends BasicGameState {
 		//exit button pressed
 		if((x > gc.getWidth() / 2 - 50 && x < gc.getWidth() / 2 + 50) && (y > 300 && y < 350)) {
 			if(Mouse.isButtonDown(0)) {
-				System.exit(0);;
+				System.exit(0);
 			}
 		}
 	}
