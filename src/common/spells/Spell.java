@@ -1,11 +1,12 @@
 package common.spells;
 
-import org.newdawn.slick.Color;
+import common.Wizard;
 
 public abstract class Spell {
     private Quality quality;
     private MagicType type;
     private boolean over;
+    private Wizard caster;
 
     /**
      * Constructor of a spell, taking an orb
@@ -14,14 +15,23 @@ public abstract class Spell {
     public Spell(ElementalOrb orb) {
         this.quality = orb.getQuality();
         this.type = orb.getType();
+        this.caster = orb.getCaster();
     }
 
     public boolean isOver(){
         return over;
     }
 
-    public void setOver(){
-        over = true;
+    public void setOver(boolean b){
+        over = b;
+    }
+
+    public Wizard getCaster(){
+        return caster;
+    }
+
+    public void setCaster(Wizard wizard){
+        caster = wizard;
     }
 
     /**
