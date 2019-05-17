@@ -40,7 +40,7 @@ public class LogIn extends BasicGameState {
         int y = gc.getHeight() - Mouse.getY();
 
         // Start button is pressed
-        if((x > gc.getWidth() / 2 - 50 && x < gc.getWidth() / 2 + 50) && (y > 400 && y < 450)) {
+        if((x > gc.getWidth() / 2 - 50 && x < gc.getWidth() / 2 + 50) && (y > 700 && y < 750)) {
             if(Mouse.isButtonDown(0)) {
                 arg1.enterState(1);
             }
