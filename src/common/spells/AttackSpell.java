@@ -14,6 +14,7 @@ public class AttackSpell extends Spell implements Movable{
 	private double speed = 3;
 	private double x, y;
 	private Image sprite;
+	private boolean bounce = false;
     /**
      * Constructor taking an orb as parameter, and a target
      * @param orb the magic orb used to build the spell
@@ -34,6 +35,11 @@ public class AttackSpell extends Spell implements Movable{
      * Method used to compute the next movement of the spell
      */
     public void move() {
+        if(bounce){
+            bounce();
+            bounce = false;
+        }
+        direction.normalize();
         this.x += (direction.getX() * speed);
         this.y += (direction.getY() * speed);
     }
@@ -44,12 +50,22 @@ public class AttackSpell extends Spell implements Movable{
      * @throws SlickException in case of emergency.
      */
     public void render(Graphics g) throws SlickException {
-        //sprite.draw((int)x - 8, (int)y - 8);
         g.drawImage(sprite, (int)x - 8, (int)y - 8);
-        /*
-        g.setColor(getColor());
-        g.fillOval((int)x - 8, (int)y - 8, 16, 16);
-        */
+    }
+
+    public void setBounce(boolean b){
+        bounce = b;
+    }
+
+    public boolean isBounce() {
+        return bounce;
+    }
+
+    public void bounce(){
+        direction = new Vector(this.target.getX(), this.getCaster().getX(), this.target.getY(), this.getCaster().getY());
+        Wizard temp = this.target;
+        this.target = this.getCaster();
+        setCaster(temp);
     }
 
     /**

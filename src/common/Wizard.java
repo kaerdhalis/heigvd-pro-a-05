@@ -106,7 +106,7 @@ public class Wizard {
             double deltaX = spell.getX() - x;
             double deltaY = spell.getY() - y;
             if(Math.sqrt(deltaX * deltaX + deltaY * deltaY) <= 8){
-                spell.setOver();
+                spell.setOver(true);
                 return true;
             } else{
                 return false;
@@ -126,13 +126,16 @@ public class Wizard {
     	if(!shield.isEmpty()) {
     	    for(int i = 0; i < shield.size(); i++) {
                 if (shield.get(i).getType() == spell.getType()) {
+                    spell.setBounce(true);
                     shielded = true;
                     indexShield = i;
+                    spell.setOver(false);
+                    break;
                 }
             }
     	    if(shielded) {
                 System.out.println("I shielded " + spell.computePower() + " damage with my " + spell.getType().name() + " shield.");
-                shield.get(indexShield).setOver();
+                shield.get(indexShield).setOver(true);
                 shield.remove(indexShield);
             } else {
     	        takeDamage(spell);

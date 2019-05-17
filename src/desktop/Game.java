@@ -76,12 +76,14 @@ public class Game extends BasicGameState {
 			for(Wizard wizard : wizards) {
 				if(wizard.checkCollision(as)) {
 					wizard.getHit(as);
-					attackSpellstoRemove.add(as);
-					if(wizard.getOrbs().size() != 0) {
-						for (int i = 0; i < wizard.getOrbs().size(); i++) {
-							elementalOrbstoRemove.add(wizard.getOrbs().get(i));
+					if(!as.isBounce()) {
+						attackSpellstoRemove.add(as);
+						if (wizard.getOrbs().size() != 0) {
+							for (int i = 0; i < wizard.getOrbs().size(); i++) {
+								elementalOrbstoRemove.add(wizard.getOrbs().get(i));
+							}
+							wizard.getOrbs().clear();
 						}
-						wizard.getOrbs().clear();
 					}
 				}
 			}
@@ -117,13 +119,13 @@ public class Game extends BasicGameState {
 
 	public void mouseClicked(int button, int x, int y, int clickCount) {
 		if (button == 0) {
-			castAttack(new Vector(wizards.get(1).getX(), x, wizards.get(1).getY(), y), wizards.get(1));
+			castAttack(new Vector(wizards.get(0).getX(), x, wizards.get(0).getY(), y), wizards.get(0));
 		}
 
 		if (button == 1) {
 			Random r = new Random();
 			int i = r.nextInt(4);
-			castOrb(wizards.get(0), Quality.PERFECT, MagicType.values()[i]);
+			castOrb(wizards.get(0), Quality.PERFECT, MagicType.values()[0]);
 		}
 	}
 
@@ -132,7 +134,7 @@ public class Game extends BasicGameState {
 			if (c == 'q') {
 				Random r = new Random();
 				int i = r.nextInt(4);
-				castOrb(wizards.get(1), Quality.PERFECT, MagicType.values()[i]);
+				castOrb(wizards.get(1), Quality.PERFECT, MagicType.values()[0]);
 			}
 		}
 		if(null != wizards) {
@@ -146,7 +148,7 @@ public class Game extends BasicGameState {
 		if(caster.getOrbs().size() != 0) {
 			for (int i = 0; i < caster.getShield().size(); i++) {
 				shieldSpellstoRemove.add(caster.getShield().get(i));
-				caster.getShield().get(i).setOver();
+				caster.getShield().get(i).setOver(true);
 				caster.getShield().clear();
 			}
 		}
