@@ -11,12 +11,12 @@ import org.newdawn.slick.state.StateBasedGame;
 public class LogIn extends BasicGameState {
 
     private Image qrCode, start;
-    private int nbPlayers = 0;
+    static private int nbPlayers = 0;
 
     @Override
     public void init(GameContainer arg0, StateBasedGame arg1) throws SlickException {
         try {
-            QRCodeGenerator.generateQRCodeImageWithIPsAndPort(300, 300);
+            QRCodeGenerator.generateQRCodeImageWithIPsAndPort(600, 600);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -28,10 +28,10 @@ public class LogIn extends BasicGameState {
     @Override
     public void render(GameContainer arg0, StateBasedGame arg1, Graphics g) {
         g.drawString("Connexion", arg0.getWidth() / 2 - 50, 50);
-        qrCode.draw(arg0.getWidth() / 2 - 150, 75);
-        start.draw(arg0.getWidth() / 2 - 50, 385);
+        qrCode.draw(arg0.getWidth() / 2 - 300, 75);
+        start.draw(arg0.getWidth() / 2 - 50, 685);
         g.drawString("Players connected : " + nbPlayers + "/4",
-                arg0.getWidth() / 2 - 100, 440);
+                arg0.getWidth() / 2 - 100, 740);
     }
 
     @Override
@@ -52,7 +52,7 @@ public class LogIn extends BasicGameState {
         return 3;
     }
 
-    public void setNbPlayers(int nb) {
+    static public void setNbPlayers(int nb) {
         nbPlayers = nb;
     }
 }

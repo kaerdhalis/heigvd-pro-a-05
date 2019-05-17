@@ -20,6 +20,7 @@ public class MainMenu extends BasicGameState {
 
 	@Override
 	public void render(GameContainer arg0, StateBasedGame arg1, Graphics g) throws SlickException {
+		//g.scale(2, 2);
 		g.drawString("Welcome to our Game", arg0.getWidth() / 2 - 100, 50);
 		startGame.draw(arg0.getWidth() / 2 - 50, 100);
 		credits.draw(arg0.getWidth() / 2 - 50, 200);

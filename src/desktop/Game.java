@@ -54,6 +54,7 @@ public class Game extends BasicGameState {
 
 	@Override
 	public void render(GameContainer gc, StateBasedGame sbg, Graphics g) throws SlickException {
+		g.scale(2, 2);
 		map.render(0, 0);
 		for(Wizard wizard : wizards) {
 			wizard.render(g);
@@ -98,6 +99,7 @@ public class Game extends BasicGameState {
 		}
 		
 		for(Wizard wizard : wizards) {
+			// A enlever à tout pris
 			if(wizard.isDead())
 				wizardsToRemove.add(wizard);
 
